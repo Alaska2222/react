@@ -1,0 +1,48 @@
+
+  
+  .info {
+    text-align: center;
+    padding: 2em;
+    
+  }
+  
+  .info h1 {
+    margin-bottom: 1rem;
+  }
+  
+  .info h3 {
+    color: #555;
+    font-weight: 400;
+    font-size: 22px;
+  }
+  
+  .info p {
+    color: #555;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.5em;
+  }
+  
+  .info ul {
+    list-style: none;
+  }
+
+  .image-block {
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-top: 25px;
+  }
+  
+  .image-block .member img {
+    width: 60%;
+    border: 5px solid transparent;
+    border-image: linear-gradient(to right, #2a2929, #044aa4);
+    border-image-slice: 1;
+    box-shadow: 5px 5px 10px black;
+  }
+  
+  .image-block .member img:hover {
+    animation: zoom-in 0.85s;
+  }

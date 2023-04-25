@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import {FaTimes, FaBars} from "react-icons/fa"
+import {Link} from "react-router-dom"
 
 function Navbar() {
     const navRef = useRef();
-
     const showNavbar = () =>{
         navRef.current.classList.toggle("responsive_nav");
     }
@@ -11,12 +11,10 @@ function Navbar() {
     return(
         <header>
             <nav ref={navRef}>
-                
-                <a href="/" target="_self">Home</a>
-                <a href="/login" target="_self" id="login-page">Login</a>
-                <a href="/profile" target="_self" id="user-profile">User Profile</a>
-                <a href="/staff" target="_self">Our Teachers</a>
-               
+                <Link to="/" target="_self">Home</Link>
+                <Link to="/login" target="_self" id="login-page">Login</Link>
+                <Link to="/profile" target="_self" id="user-profile">User Profile</Link>
+                <Link to="/staff" target="_self">Our Staff</Link>
                 <button className="nav-btn nav-close-btn" onClick={showNavbar}>
                     <FaTimes />
                 </button>   
