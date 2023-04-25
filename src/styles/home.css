@@ -1,33 +1,27 @@
+main {
+    text-align: center;
+    padding: 1em;
+}
 
   
-  .info {
-    text-align: center;
-    padding: 2em;
-    
-  }
-  
-  .info h1 {
-    margin-bottom: 1rem;
-  }
-  
-  .info h3 {
+main h3 {
     color: #555;
     font-weight: 400;
     font-size: 22px;
   }
   
-  .info p {
+main p {
     color: #555;
     font-weight: 400;
     font-size: 20px;
-    line-height: 1.5em;
+    line-height: 1rem;
   }
   
-  .info ul {
+main ul {
     list-style: none;
   }
 
-  .image-block {
+.image-block {
     text-align: center;
     display: flex;
     flex-direction: row;
@@ -35,7 +29,7 @@
     padding-top: 25px;
   }
   
-  .image-block .member img {
+.image-block .image img {
     width: 60%;
     border: 5px solid transparent;
     border-image: linear-gradient(to right, #2a2929, #044aa4);
@@ -43,6 +37,6 @@
     box-shadow: 5px 5px 10px black;
   }
   
-  .image-block .member img:hover {
+.image-block .image img:hover {
     animation: zoom-in 0.85s;
   }
