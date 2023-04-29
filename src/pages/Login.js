@@ -26,18 +26,20 @@ export default function Login(){
             localStorage.setItem('username', username);
             localStorage.setItem('password', password);
             localStorage.setItem('role', data.Status);
-            navigate('/')
+            navigate('/profile')
             console.log(localStorage.getItem('username'), localStorage.getItem('password'))
+            window.location.reload();
         } 
       };
 
     return(
+
         <>
             <div className="form-block">
             
                 <div className="side-image"></div>
                 <form method="#" className="log-in" onSubmit={handleSubmit}> 
-                    <h1><span className="highlight">Log in</span></h1>
+                    <h1><span className="highlight" >Log in</span></h1>
                     <div className="floating-label">
                         <input className="input"
                          placeholder="Username"
@@ -61,7 +63,7 @@ export default function Login(){
                         <label htmlFor="password">Password:</label>
                     </div>
                         <h3>Don`t have an account yet?  <Link to="/register" target="_self">Sign up!</Link></h3>
-                        <Button Title="Log in" Id="login-btn"/>
+                        <Button Title="Log in" Id="login-btn" />
                 </form>
             </div>
             </>

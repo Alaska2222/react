@@ -13,14 +13,13 @@ function App() {
   const ProtectedRoute = ({ allowedRoles, children }) => {
     const userRole = localStorage.getItem('role');
     if (!allowedRoles.includes(userRole)) {
-      return <Navigate to="/" replace />;
+      return <Navigate to="/login" replace />;
     }
     return children;
   };
 
   return (
   <>
-      
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -33,7 +32,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/staff" element={<Staff />} />
         <Route path="/register" element={<Register />} />
         <Route
           path="/admin"
@@ -43,6 +41,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/staff" element={<Staff />} />
         <Route path="*" element={<h1>There's nothing here: 404!</h1>} />
       </Routes>
    </>
