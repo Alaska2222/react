@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function FloatLabel(props){
+export default function FloatLabel({ onChange, Data, Title, Type, Value }){
     return (
         <div className="floating-label">
-            <input className="input" placeholder={props.Title} type={props.Type} name={props.Data} id={props.Data} required/>
-            <label htmlFor={props.Data}>{props.Data}:</label>
+            <input className="input" onChange={ onChange } placeholder={Title} type={Type} name={Data} id={Data} value={Value} required/>
+            <label htmlFor={Data}>{Data}:</label>
         </div>)      
 }

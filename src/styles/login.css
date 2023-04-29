@@ -218,9 +218,10 @@ label {
   .dropdown-menu ul li{
     padding: 5px  0;
     border-top: 1px  rgba(0, 0, 0, 0.05);
-    justify-content: center;
+    justify-content: left;
     
   }
+
   
   .dropdown-menu ul li:hover a{
     background-color: #3d95ecd4;
@@ -239,7 +240,7 @@ label {
   
   #dropdown-title{
     width: 100%;
-    text-align: center;
+    text-align: left;
     font-size: 18px;
     padding: 20px 0;
     font-weight: 500;

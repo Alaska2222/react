@@ -33,8 +33,10 @@ export default function Register() {
     });
   };
 
-  const handleItemClick = (text) => {
+  const handleItemClick = (text, Role) => {
     setSelectedItem(text);
+    setValue(text);
+    setUserrole(Role)
   }
 
   useEffect(() => {
@@ -43,29 +45,157 @@ export default function Register() {
 
   function DropdownItem(props){
     return(
-      <li className='dropdownItem' onClick={() => handleItemClick(props.text)}>
+      <li className='dropdownItem' onClick={() => handleItemClick(props.text, props.Role)}>
         <a> {props.text} </a>
       </li>
     );
   }
+
+  const [name, setName] = useState('')
+  const [surname, setSurname] = useState('')
+  const [age, setAge] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [cpassword, setCPassword] = useState('')
+
+  const [value, setValue] = useState('')
+  const [userrole, setUserrole] = useState('')
   
+
+  const handleUserNameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleCPasswordChange = (event) => {
+    setCPassword(event.target.value);
+  };
+
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+  };
+
+  const handleSurnameChange = (event) => {
+    setSurname(event.target.value);
+  };
+
+  const handleAgeChange = (event) => {
+    setAge(event.target.value);
+  };
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePhoneChange = (event) => {
+    setPhone(event.target.value);
+  };
+
+ 
+
+  async function onSubmit() {
+    let item = { username, password, age, value, phone, email, name, surname };
+    console.log(item);
+  
+    let url = "";
+    let data = {}
+    if (userrole === "user") {
+      url = "http://127.0.0.1:5000/groups";
+      data = {
+        StudentId: username,
+        Firstname: name,
+        Surname: surname,
+        Password: password,
+        GroupId: Number(value),
+        Email: email,
+        Age: Number(age),
+        Phone: phone,
+      };
+    } else if (userrole === "admin") {
+      url = "http://127.0.0.1:5000/teachers";
+      data = {
+        TeacherId: username,
+        Password: password,
+        Firstname: name,
+        Surname: surname,
+        Email: email,
+        Age: Number(age),
+        Phone: phone,
+        SubjectId: value,
+      };
+    }
+  
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
+      console.log("Data sent successfully!");
+    } catch (error) {
+      console.error("There was a problem sending the data: ", error);
+    }
+  }
+    
+  
+
+  let [records, setRecord] = useState([])
+    useEffect(() => {
+        fetch("http://127.0.0.1:5000/groups")
+    .then((response)=>{
+         return response.json(); 
+     })
+    .then((data)=>{
+        setRecord(data)
+     })
+    .catch(err => console.log(err))
+     }, [])
+
+
+  let [otherrecords, setOtherRecord] = useState([])
+     useEffect(() => {
+         fetch("http://127.0.0.1:5000/subjects")
+     .then((response)=>{
+          return response.json(); 
+      })
+     .then((data)=>{
+      setOtherRecord(data)
+      })
+     .catch(err => console.log(err))
+      }, [])
+  
+ 
+
   return (
     <div className="form-block" ref={menuRef}>
       <div className="side-image"></div>
       <form method="#" className="log-in">
         <h1><span className="highlight">Register</span></h1>
-        <FloatLabel Data="username" Title="Username" Type="text" />
-        <FloatLabel Data="password" Title="Password" Type="password" />
-        <FloatLabel Data="cpassword" Title="Confirm Password" Type="password" />
-        <FloatLabel Data="name" Title="Name" Type="text" />
-        <FloatLabel Data="surname" Title="Surname" Type="text" />
-        <FloatLabel Data="age" Title="Age" Type="num" />
-        <FloatLabel Data="email" Title="Email" Type="email" />
-        <FloatLabel Data="phone" Title="Phone" Type="tel" />
+        <FloatLabel Data="username" Value={username} Title="Username" Type="text" onChange={handleUserNameChange}/>
+        <FloatLabel Data="password" Value={password} Title="Password" Type="password" onChange={handlePasswordChange}/>
+        <FloatLabel Data="cpassword" Value={cpassword} Title="Confirm Password" Type="password" onChange={handleCPasswordChange} />
+        <FloatLabel Data="name" Value={name} Title="Name" Type="text" onChange={handleNameChange}/>
+        <FloatLabel Data="surname" Value={surname} Title="Surname" Type="text" onChange={handleSurnameChange}/>
+        <FloatLabel Data="age" Value={age} Title="Age" Type="num" onChange={handleAgeChange}/>
+        <FloatLabel Data="email" Value={email} Title="Email" Type="email" onChange={handleEmailChange}/>
+        <FloatLabel Data="phone" Value={phone} Title="Phone" Type="tel" onChange={handlePhoneChange}/>
         <div className='menu-container' ref={menuRef}>
         <div className='menu-trigger'>
-          <a class="role-btn" onClick={(event)=>{setOpenStudent(!openStudent); setOpenTeacher(false); handleClick(event);}}>I am Student</a>
-          <a class="role-btn" onClick={(event)=>{setOpenTeacher(!openTeacher); setOpenStudent(false); handleClick(event);}}>I am Teacher</a>
+          <a className="role-btn" onClick={(event)=>{setOpenStudent(!openStudent); setOpenTeacher(false); handleClick(event);}}>I am Student</a>
+          <a className="role-btn" onClick={(event)=>{setOpenTeacher(!openTeacher); setOpenStudent(false); handleClick(event);}}>I am Teacher</a>
         </div>
 
         <div className={`dropdown-menu ${openStudent || openTeacher ? 'active' : 'inactive'}`} style={{top: menuPosition.top, left: menuPosition.left}}>
@@ -74,23 +204,23 @@ export default function Register() {
             {openStudent ? (
               <>
               <h3 id="dropdown-title">Choose your group: {selectedItem || ''}</h3>
-                <DropdownItem text={"Group#1"} />
-                <DropdownItem text={"Group#2"} />
-                <DropdownItem text={"Group#3"} />
+                {records.map((obj) => (
+                <DropdownItem  key={obj.GroupId} text={obj.GroupId} Role="user"/>
+            ))}
               </>
             ) : openTeacher ? (
               <>
               <h3 id="dropdown-title">Choose your subject: {selectedItem || ''}</h3>
-                <DropdownItem text={"Subject#1"} />
-                <DropdownItem text={"Subject#2"} />
-                <DropdownItem text={"Subject#3"} />
+                {otherrecords.map((obj) => (
+                <DropdownItem  key={obj.SubjectId} text={obj.SubjectId} Role="admin"/>
+            ))}
               </>
             ) : null}
           </ul>
         </div>
 
       </div>
-        <Button Title="Sign up" Id="registrate-btn" />
+        <Button Title="Sign up" Id="registrate-btn" onClick={onSubmit}/>
       </form>
     </div>
   )
