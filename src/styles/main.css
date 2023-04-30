@@ -352,5 +352,34 @@ background: linear-gradient(180deg, transparent 60%, rgba(34, 133, 255, 0.496) 6
   }
 
 
+.error-container h3{
+	font-size:50px;
+	text-align:center;
+	font-family: 'Roboto', sans-serif;
+  }
+  .error-container p{
+	text-align:center;
+	font-family: 'Roboto', sans-serif;
+	font-size: 30px;
+	}
+	
+.error-container{
+	width:100%;
+	
+}
 
+.error-container h1{
+	font-size: 80px;
+	font-weight:800;
+	text-align:center;
+	font-family: 'Roboto', sans-serif;
+}
+
+.error-container p a {
+    text-decoration: none;
+    color: rgba(51, 51, 51, 0.786);
+  }
   
+  .error-container p a:hover {
+    color: rgba(41, 124, 219, 0.875);
+  }
