@@ -3,6 +3,8 @@ import BioInput from '../components/BioInput';
 import TableItem from '../components/TableItem';
 import Button from '../components/Button';
 import profile from "../assets/profile.png"
+import Piechart from '../components/PieChart';
+import Linechart from '../components/LineChart';
 
 export default function Profile(){
     const [name, setName] = useState('')
@@ -55,7 +57,6 @@ export default function Profile(){
                 })
                 .then(data => {
                     setRecord(data);
-                    console.log(records)
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -68,9 +69,48 @@ export default function Profile(){
         fetchData();
     }, []);
     
+    const calculateAverageByTeacher = (records) => {
+        const averages = {};
+      
+        records.forEach((record) => {
+          const { TeacherId, Value } = record;
+      
+          if (!averages[TeacherId]) {
+            averages[TeacherId] = { sum: 0, count: 0 };
+          }
+      
+          averages[TeacherId].sum += parseInt(Value);
+          averages[TeacherId].count++;
+        });
+      
+        for (let teacherId in averages) {
+          averages[teacherId].average = parseInt(averages[teacherId].sum) / parseInt(averages[teacherId].count);
+        }
+        
+        let arr = []
+        Object.keys(averages).map((TeacherId) => {
+            arr.push(averages[TeacherId].average)
+        });
+        
+        const labels = Object.keys(averages);
+        let labels_new = []
+        for (let i = 0; i < labels.length; i++) {
+            if (Number.isInteger(arr[i])) {
+                labels_new.push(`${labels[i]}(${arr[i]})`);
+              } else {
+                labels_new.push(`${labels[i]}(${arr[i].toFixed(2)})`);
+              }
+          }
+        return [labels_new, arr];
+      };
 
+      const [labels, arr] = calculateAverageByTeacher(records);
+
+
+   
     return (
         <>
+        
             <h1 id="profile-title"><span className="highlight">Welcome to the, student profile!</span></h1>
                 <div className="wrapper"> 
                     <div className="bio-block">
@@ -110,9 +150,12 @@ export default function Profile(){
                             </table>
                         </div>
                         <div className="stats-block">
-                            <div className="diagram"></div>
-                            <div className="diagram"></div>
-                            <div className="diagram"></div>   
+                            <div className="diagram" >
+                            <Piechart series={arr} labels={labels}/>
+                            </div>
+                            <div className="diagram">
+                            <Linechart records={records} />
+                             </div>  
                         </div>  
                 </div>
             </div>

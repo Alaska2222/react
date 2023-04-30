@@ -131,33 +131,18 @@ background: linear-gradient(180deg, transparent 60%, rgba(34, 133, 255, 0.496) 6
   .stats-block {
 	display: flex;
 	flex-direction: row;
-	justify-content: space-around;
+	justify-content: center;
 	position: absolute; 
 	bottom: 2rem;
 	width: 95%;
   }
   
   .diagram {
-	width: 300px;
+	width: 500px;
 	height: 300px;
 	margin-right: 10px;
-	border-image-slice: 1;
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: contain;
   }
   
-  .diagram:nth-child(1) {
-	background-image: url("../assets/hist1.png");
-  }
-  
-  .diagram:nth-child(2) {
-	background-image: url("../assets/hist2.png");
-  }
-  
-  .diagram:nth-child(3) {
-	background-image: url("../assets/hist3.png");
-  }
   
   .bio-block, .grades-block{
 	background-color: #f8f9fa;
