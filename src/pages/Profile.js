@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import BioInput from '../components/BioInput';
 import TableItem from '../components/TableItem';
 import Button from '../components/Button';
@@ -106,6 +106,32 @@ export default function Profile(){
 
       const [labels, arr] = calculateAverageByTeacher(records);
 
+      const [sortColumn, setSortColumn] = useState("date");
+  const [sortDirection, setSortDirection] = useState("asc");
+
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      setSortDirection((direction) => (direction === "asc" ? "desc" : "asc"));
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const sortedRecords = useMemo(() => {
+    return records.sort((a, b) => {
+      const columnA = a[sortColumn];
+      const columnB = b[sortColumn];
+      const direction = sortDirection === "asc" ? 1 : -1;
+      if (columnA < columnB) {
+        return -1 * direction;
+      }
+      if (columnA > columnB) {
+        return 1 * direction;
+      }
+      return 0;
+    });
+  }, [records, sortColumn, sortDirection]);
 
    
     return (
@@ -134,19 +160,65 @@ export default function Profile(){
                         <table>
                             <thead>
                             <tr>
-                                <th><a href="//" className="sort-by" id="num">№</a></th>
-                                <th><a href="//" className="sort-by" id="sbj">Subject</a></th>
-                                <th><a href="//" className="sort-by" id="teacherID">Teacher</a></th>
-                                <th><a href="//" className="sort-by" id="value">Mark</a></th>
-                                <th><a href="//" className="sort-by" id="date">Date</a></th>
-                            </tr>
+                  <th>
+                    <a
+                      className="sort-by"
+                      id="num"
+                      onClick={() => handleSort("MarkId")}
+                    >
+                      №
+                    </a>
+                  </th>
+                  <th>
+                    <a
+                      className="sort-by"
+                      id="sbj"
+                      onClick={() => handleSort("SubjectId")}
+                    >
+                      Subject
+                    </a>
+                  </th>
+                  <th>
+                    <a
+                      className="sort-by"
+                      id="teacherID"
+                      onClick={() => handleSort("TeacherId")}
+                    >
+                      Teacher
+                    </a>
+                  </th>
+                  <th>
+                    <a
+                      className="sort-by"
+                      id="value"
+                      onClick={() => handleSort("Value")}
+                    >
+                      Mark
+                    </a>
+                  </th>
+                  <th>
+                    <a
+                      className="sort-by"
+                      id="date"
+                      onClick={() => handleSort("DateId")}
+                    >
+                      Date
+                    </a>
+                  </th>
+                </tr>
                             </thead>
                             <tbody>
-                            {records.map((obj) => (
-                                <TableItem key={obj.MarkId} Id={obj.MarkId} Sbj={obj.SubjectId} Teacher={obj.TeacherId} 
-                                Value={obj.Value} Date={obj.DateId} />
-                            ))}
-                            </tbody>
+                {sortedRecords.map((obj) => (
+                  <TableItem
+                    key={obj.MarkId}
+                    Id={obj.MarkId}
+                    Sbj={obj.SubjectId}
+                    Teacher={obj.TeacherId}
+                    Value={obj.Value}
+                    Date={obj.DateId}
+                  />
+                ))}
+              </tbody>
                             </table>
                         </div>
                         <div className="stats-block">
