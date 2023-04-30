@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import profile from "../assets/profile.png"
 import Piechart from '../components/PieChart';
 import Linechart from '../components/LineChart';
+import DeleteButton from '../components/DeleteButton';
 
 export default function Profile(){
     const [name, setName] = useState('')
@@ -152,7 +153,7 @@ export default function Profile(){
                     </div>
                     <div className ="button-group">
                         <Button Id="update-btn" Title="Update"/>
-                        <Button Id="delete-btn" Title="Delete"/>
+                        <DeleteButton username={username} />
                     </div>
                     </div>
                     <div className="grades-block">

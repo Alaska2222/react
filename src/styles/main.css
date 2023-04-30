@@ -261,6 +261,7 @@ background: linear-gradient(180deg, transparent 60%, rgba(34, 133, 255, 0.496) 6
 	padding: 1rem 0;
 	justify-content: center;
 	column-gap: 60px;
+	
   }
   
   .button-group #update-btn, .button-group #delete-btn{
@@ -351,5 +352,5 @@ background: linear-gradient(180deg, transparent 60%, rgba(34, 133, 255, 0.496) 6
   }
 
 
-  
+
   
