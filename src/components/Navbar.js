@@ -36,12 +36,12 @@ function Navbar() {
         {isLoggedIn ? (
           <>
             <Link onClick={handleLogout}>Logout</Link>
-            <Link to="/profile" target="_self" id="user-profile">
+            <Link to="/profile" target="_self">
               User Profile
             </Link>
           </>
         ) : (
-          <Link to="/login" target="_self" id="login-page">
+          <Link to="/login" target="_self" >
             Login
           </Link>
         )}

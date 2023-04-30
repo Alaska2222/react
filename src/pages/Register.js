@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Button from '../components/Button';
 import FloatLabel from '../components/FloatLabel';
+import {  useNavigate } from 'react-router-dom';
 
 export default function Register() {
+  const navigate = useNavigate()
   const [openStudent, setOpenStudent] = useState(false);
   const [openTeacher, setOpenTeacher] = useState(false);
   const [menuPosition, setMenuPosition] = useState({top: 0, left: 0});
@@ -99,7 +101,8 @@ export default function Register() {
 
  
 
-  async function onSubmit() {
+  async function onSubmit(event) {
+    event.preventDefault(); 
     let item = { username, password, age, value, phone, email, name, surname };
     console.log(item);
   
@@ -131,7 +134,7 @@ export default function Register() {
       };
     }
   
-    try {
+    
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -143,11 +146,12 @@ export default function Register() {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-  
-      console.log("Data sent successfully!");
-    } catch (error) {
-      console.error("There was a problem sending the data: ", error);
-    }
+      if (response.ok) {
+        navigate("/login")
+        console.log("Data sent successfully!");
+      }
+      
+    
   }
     
   
