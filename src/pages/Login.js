@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../components/Button";
 import "../styles/login.css";
 import { Link, useNavigate } from "react-router-dom";
+import { AnimatedPage } from "../components/AnimatedPage";
 
 export default function Login() {
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function Login() {
   };
 
   return (
-    <>
+    <AnimatedPage>
      
       <div className="form-block">
         <div className="side-image"></div>
@@ -83,6 +84,6 @@ export default function Login() {
           <Button Title="Log in" Id="login-btn" />
         </form>
       </div>
-    </>
+    </AnimatedPage>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Teacher from '../components/Teacher';
 import "../styles/staff.css"
+import { AnimatedPage } from '../components/AnimatedPage';
 
 
 export default function Staff(){
@@ -18,6 +19,7 @@ export default function Staff(){
      }, [])
      
     return (
+       <AnimatedPage>
      <div>
         <h1><span className="highlight">GradeMaster`s Teaching Staff</span></h1>
         <div className="teacher-list">
@@ -35,5 +37,6 @@ export default function Staff(){
             ))}
         </div>
     </div>
+    </AnimatedPage> 
     );
 }

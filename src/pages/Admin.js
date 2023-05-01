@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import DeleteButton from '../components/DeleteButton';
 import {SearchBar} from '../components/SearchBar';
 import { SearchResultsList } from '../components/SearchResultsList';
+import { AnimatedPage } from '../components/AnimatedPage';
 
 export default function Admin(){
 
@@ -71,7 +72,7 @@ export default function Admin(){
         fetchData();
     }, []);
     return (
-        <>
+        <AnimatedPage>
             <h1 id="profile-title"><span className="highlight">Welcome to the, admin profile!</span></h1>
                 <div className="wrapper-admin"> 
                     <div className="bio-block">
@@ -98,6 +99,6 @@ export default function Admin(){
                             </div>
                         </div>
             </div>
-        </>
+        </AnimatedPage>
     )
 }

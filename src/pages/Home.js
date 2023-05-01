@@ -3,6 +3,7 @@ import "../styles/home.css"
 import hist1 from '../assets/hist1.png';
 import hist2 from '../assets/hist1.png';
 import hist3 from '../assets/hist1.png';
+import { AnimatedPage } from '../components/AnimatedPage';
 
 export default function Home(){
     useEffect(() => {
@@ -10,6 +11,7 @@ export default function Home(){
      }, []);
 
      return (
+        <AnimatedPage>
         <div>
             <main>
                 <h1><span className="highlight">GradeMaster</span></h1>
@@ -31,5 +33,6 @@ export default function Home(){
                 </div>
             </div>
         </div>
+        </AnimatedPage>
     )
 }

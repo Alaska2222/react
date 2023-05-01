@@ -261,7 +261,7 @@
 	text-align:center;
 	font-family: 'Roboto', sans-serif;
   }
-  .error-container p{
+.error-container p{
 	text-align:center;
 	font-family: 'Roboto', sans-serif;
 	font-size: 30px;
@@ -352,3 +352,4 @@
 	width: 300px;
 	height: 280px;
 }
+

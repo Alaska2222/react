@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Button from '../components/Button';
 import FloatLabel from '../components/FloatLabel';
 import {  useNavigate } from 'react-router-dom';
+import { AnimatedPage } from '../components/AnimatedPage';
 
 export default function Register() {
   const navigate = useNavigate()
@@ -60,7 +61,7 @@ export default function Register() {
 
   function DropdownItem(props){
     return(
-      <li className='dropdownItem' onClick={() => handleItemClick(props.text, props.Role)}>
+      <li className='dropdownItem' onClick={() => handleItemClick(props.text, props.Role)} >
         <a> {props.text} </a>
       </li>
     )
@@ -144,6 +145,7 @@ export default function Register() {
       }, [])
 
   return (
+    <AnimatedPage>
     <div className="form-block" ref={menuRef}>
       <div className="side-image"></div>
       <form method="#" className="log-in">
@@ -198,5 +200,6 @@ export default function Register() {
         <Button Title="Sign up" Id="registrate-btn" onClick={onSubmit}/>
       </form>
     </div>
+    </AnimatedPage>
   )
 }

@@ -7,6 +7,7 @@ import Piechart from '../components/PieChart';
 import Linechart from '../components/LineChart';
 import DeleteButton from '../components/DeleteButton';
 import "../styles/profile.css"
+import { AnimatedPage } from '../components/AnimatedPage';
 
 
 export default function Profile(){
@@ -138,8 +139,7 @@ export default function Profile(){
 
    
     return (
-        <>
-        
+        <AnimatedPage>
             <h1 id="profile-title"><span className="highlight">Welcome, to the student profile!</span></h1>
                 <div className="wrapper"> 
                     <div className="bio-block">
@@ -234,6 +234,6 @@ export default function Profile(){
                         </div>  
                 </div>
             </div>
-        </>
+        </AnimatedPage>
     )
 }

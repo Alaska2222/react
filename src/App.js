@@ -7,8 +7,9 @@ import Staff from "./pages/Staff"
 import Register from "./pages/Register"
 import Admin from "./pages/Admin"
 import ErrorPage from "./pages/ErrorPage"
-import {Route, Routes, Navigate} from "react-router-dom"
+import {Route, Routes, Navigate, useLocation} from "react-router-dom"
 import "./styles/main.css"
+import { AnimatePresence } from "framer-motion"
 
 function App() {
 
@@ -20,10 +21,12 @@ function App() {
     return children;
   };
 
+  const location = useLocation()
   return (
   <>
       <Navbar />
-      <Routes>
+      <AnimatePresence mode="wait">
+      <Routes key={location.pathname} location={location}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route
@@ -46,6 +49,7 @@ function App() {
         <Route path="/staff" element={<Staff />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
+      </AnimatePresence>
    </>
   );
 }
