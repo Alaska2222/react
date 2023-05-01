@@ -16,17 +16,22 @@ export default function Staff(){
      })
     .catch(err => console.log(err))
      }, [])
-
-    
-    
-
+     
     return (
      <div>
         <h1><span className="highlight">GradeMaster`s Teaching Staff</span></h1>
         <div className="teacher-list">
             {records.map((obj) => (
-                <Teacher key={obj.TeacherId} Username= {obj.TeacherId} Name={obj.Firstname} Surname={obj.Surname}
-                 Age={obj.Age} Subject={obj.SubjectId} Phone={obj.Phone} Email={obj.Email} />
+                <Teacher
+                    key={obj.TeacherId}
+                    Username= {obj.TeacherId}
+                    Name={obj.Firstname}
+                    Surname={obj.Surname}
+                    Age={obj.Age}
+                    Subject={obj.SubjectId} 
+                    Phone={obj.Phone}
+                    Email={obj.Email}
+                />
             ))}
         </div>
     </div>

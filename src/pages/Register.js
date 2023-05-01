@@ -7,33 +7,46 @@ export default function Register() {
   const navigate = useNavigate()
   const [openStudent, setOpenStudent] = useState(false);
   const [openTeacher, setOpenTeacher] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({top: 0, left: 0});
+  const [menuPosition, setMenuPosition] = useState({top: 0, left: 0})
   const [selectedItem, setSelectedItem] = useState(null);
+  const [name, setName] = useState('')
+  const [surname, setSurname] = useState('')
+  const [age, setAge] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [cpassword, setCPassword] = useState('')
+  const [value, setValue] = useState('')
+  const [userrole, setUserrole] = useState('')
+  const [records, setRecord] = useState([])
+  const [otherrecords, setOtherRecord] = useState([])
 
-  let menuRef = useRef();
+  const nameRegex = /^[a-zA-Z ]+$/;
+  let menuRef = useRef()
 
   useEffect(() => {
     let handler = (e)=>{
       if(!menuRef.current.contains(e.target)){
-        setOpenStudent(false);
-        setOpenTeacher(false); 
+        setOpenStudent(false)
+        setOpenTeacher(false)
       }      
     };
-    document.addEventListener("mousedown", handler);
+    document.addEventListener("mousedown", handler)
 
     return() =>{
-      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("mousedown", handler)
     }
 
-  });
+  })
 
   const handleClick = (event) => {
-    setSelectedItem("");
+    setSelectedItem("")
     setMenuPosition({
       top: event.pageY,
       left: event.pageX
-    });
-  };
+    })
+  }
 
   const handleItemClick = (text, Role) => {
     setSelectedItem(text);
@@ -43,73 +56,32 @@ export default function Register() {
 
   useEffect(() => {
     document.title = "Register"
-  }, []);
+  }, [])
 
   function DropdownItem(props){
     return(
       <li className='dropdownItem' onClick={() => handleItemClick(props.text, props.Role)}>
         <a> {props.text} </a>
       </li>
-    );
+    )
   }
 
-  const [name, setName] = useState('')
-  const [surname, setSurname] = useState('')
-  const [age, setAge] = useState('')
-  const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [cpassword, setCPassword] = useState('')
-
-  const [value, setValue] = useState('')
-  const [userrole, setUserrole] = useState('')
-  
-
-  const handleUserNameChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleCPasswordChange = (event) => {
-    setCPassword(event.target.value);
-  };
-
-  const handleNameChange = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleSurnameChange = (event) => {
-    setSurname(event.target.value);
-  };
-
-  const handleAgeChange = (event) => {
-    setAge(event.target.value);
-  };
-
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePhoneChange = (event) => {
-    setPhone(event.target.value);
-  };
-
- 
+  const handleUserNameChange = (event) => {setUsername(event.target.value)}
+  const handlePasswordChange = (event) => {setPassword(event.target.value)}
+  const handleCPasswordChange = (event) => {setCPassword(event.target.value)}
+  const handleNameChange = (event) => {setName(event.target.value)}
+  const handleSurnameChange = (event) => {setSurname(event.target.value)}
+  const handleAgeChange = (event) => {setAge(event.target.value)}
+  const handleEmailChange = (event) => {setEmail(event.target.value)}
+  const handlePhoneChange = (event) => {setPhone(event.target.value)}
 
   async function onSubmit(event) {
-    event.preventDefault(); 
-    let item = { username, password, age, value, phone, email, name, surname };
-    console.log(item);
-  
-    let url = "";
+    event.preventDefault()
+    
+    let url = ""
     let data = {}
     if (userrole === "user") {
-      url = "http://127.0.0.1:5000/groups";
+      url = "http://127.0.0.1:5000/groups"
       data = {
         StudentId: username,
         Firstname: name,
@@ -120,8 +92,9 @@ export default function Register() {
         Age: Number(age),
         Phone: phone,
       };
-    } else if (userrole === "admin") {
-      url = "http://127.0.0.1:5000/teachers";
+    } 
+    else if (userrole === "admin") {
+      url = "http://127.0.0.1:5000/teachers"
       data = {
         TeacherId: username,
         Password: password,
@@ -134,30 +107,21 @@ export default function Register() {
       };
     }
   
-    
-      const response = await fetch(url, {
+    const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-      });
+      })
   
       if (!response.ok) {
         throw new Error("Network response was not ok");
-      }
-      if (response.ok) {
-        navigate("/login")
-        console.log("Data sent successfully!");
-      }
-      
-    
+      } 
+      navigate("/login")
   }
-    
-  
 
-  let [records, setRecord] = useState([])
-    useEffect(() => {
+  useEffect(() => {
         fetch("http://127.0.0.1:5000/groups")
     .then((response)=>{
          return response.json(); 
@@ -168,9 +132,7 @@ export default function Register() {
     .catch(err => console.log(err))
      }, [])
 
-
-  let [otherrecords, setOtherRecord] = useState([])
-     useEffect(() => {
+  useEffect(() => {
          fetch("http://127.0.0.1:5000/subjects")
      .then((response)=>{
           return response.json(); 
@@ -180,8 +142,6 @@ export default function Register() {
       })
      .catch(err => console.log(err))
       }, [])
-  
- 
 
   return (
     <div className="form-block" ref={menuRef}>
@@ -198,12 +158,24 @@ export default function Register() {
         <FloatLabel Data="phone" Value={phone} Title="Phone" Type="tel" onChange={handlePhoneChange}/>
         <div className='menu-container' ref={menuRef}>
         <div className='menu-trigger'>
-          <a className="role-btn" onClick={(event)=>{setOpenStudent(!openStudent); setOpenTeacher(false); handleClick(event);}}>I am Student</a>
-          <a className="role-btn" onClick={(event)=>{setOpenTeacher(!openTeacher); setOpenStudent(false); handleClick(event);}}>I am Teacher</a>
+          <a
+            className="role-btn" 
+            onClick={(event)=>{setOpenStudent(!openStudent);
+            setOpenTeacher(false);
+            handleClick(event);}}>
+            I am Student
+          </a>
+          <a 
+            className="role-btn"
+            onClick={(event)=>{setOpenTeacher(!openTeacher);
+            setOpenStudent(false);
+            handleClick(event);}}>
+            I am Teacher
+          </a>
         </div>
-
-        <div className={`dropdown-menu ${openStudent || openTeacher ? 'active' : 'inactive'}`} style={{top: menuPosition.top, left: menuPosition.left}}>
-
+        <div 
+          className={`dropdown-menu ${openStudent || openTeacher ? 'active' : 'inactive'}`}
+          style={{top: menuPosition.top, left: menuPosition.left}}>
           <ul>
             {openStudent ? (
               <>
@@ -222,7 +194,6 @@ export default function Register() {
             ) : null}
           </ul>
         </div>
-
       </div>
         <Button Title="Sign up" Id="registrate-btn" onClick={onSubmit}/>
       </form>

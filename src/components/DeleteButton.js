@@ -3,9 +3,14 @@ import { useNavigate } from 'react-router-dom';
 
 function DeleteButton({ username }) {
   const [confirmed, setConfirmed] = useState(false);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleDelete = () => {
-    const url = `http://127.0.0.1:5000/student/${username}`;
+    let url =  "";
+    if(localStorage.getItem("role") ==="user"){
+      url = `http://127.0.0.1:5000/student/${username}`
+    } else{
+      url = `http://127.0.0.1:5000/teachers/${username}`
+    }
     const options = {
       method: 'DELETE',
       headers: {

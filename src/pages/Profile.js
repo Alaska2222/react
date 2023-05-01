@@ -2,10 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import BioInput from '../components/BioInput';
 import TableItem from '../components/TableItem';
 import Button from '../components/Button';
-import profile from "../assets/profile.png"
+import profile from "../assets/user.png"
 import Piechart from '../components/PieChart';
 import Linechart from '../components/LineChart';
 import DeleteButton from '../components/DeleteButton';
+import "../styles/profile.css"
+
 
 export default function Profile(){
     const [name, setName] = useState('')
@@ -138,10 +140,10 @@ export default function Profile(){
     return (
         <>
         
-            <h1 id="profile-title"><span className="highlight">Welcome to the, student profile!</span></h1>
+            <h1 id="profile-title"><span className="highlight">Welcome, to the student profile!</span></h1>
                 <div className="wrapper"> 
                     <div className="bio-block">
-                    <img src={profile} alt="profile logo"/>
+                    <img id="user-logo"src={profile} alt="profile logo"/>
                     <h3>{username}</h3>
                     <div className="inputs-block">
                         <BioInput Label="Name" Name={name} Type="text" Id="name"/>

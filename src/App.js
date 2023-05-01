@@ -5,6 +5,7 @@ import Login from "./pages/Login"
 import Profile from "./pages/Profile"
 import Staff from "./pages/Staff"
 import Register from "./pages/Register"
+import Admin from "./pages/Admin"
 import ErrorPage from "./pages/ErrorPage"
 import {Route, Routes, Navigate} from "react-router-dom"
 import "./styles/main.css"
@@ -38,7 +39,7 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
-              <Profile />
+              <Admin />
             </ProtectedRoute>
           }
         />
