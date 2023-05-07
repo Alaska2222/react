@@ -8,9 +8,9 @@ import Register from "./pages/Register"
 import Admin from "./pages/Admin"
 import ErrorPage from "./pages/ErrorPage"
 import {Route, Routes, Navigate, useLocation} from "react-router-dom"
-import "./styles/main.css"
-import { AnimatePresence } from "framer-motion"
 
+import { AnimatePresence } from "framer-motion"
+import "./styles/main.css"
 function App() {
 
   const ProtectedRoute = ({ allowedRoles, children }) => {
@@ -25,7 +25,7 @@ function App() {
   return (
   <>
       <Navbar />
-      <AnimatePresence mode="wait">
+    
       <Routes key={location.pathname} location={location}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -49,7 +49,6 @@ function App() {
         <Route path="/staff" element={<Staff />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
-      </AnimatePresence>
    </>
   );
 }

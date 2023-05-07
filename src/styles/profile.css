@@ -64,7 +64,7 @@
 	overflow-x: hidden;
   }
   
-  table {
+  .table-block table {
 	box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.1);
 	position: relative;
 	width: 100%; 
@@ -80,43 +80,43 @@
 	border-radius: 4px;
   }
   
-  thead{
+  .table-block table thead{
 	position: sticky;
 	top: 0;
   }
-  th,
-  td {
+  .table-block table th,
+  .table-block table  td {
 	padding: 0.75rem;
 	vertical-align: top;
   }
   
-  td:hover{
+  .table-block table  td:hover{
 	background-color: #7a7a7a7b;
   }
   
-  th {
+  .table-block table th {
 	text-align: left;
 	text-transform: uppercase;
 	letter-spacing: 0.1rem;
 	background-color: white;
   }
   
-  td {
+  .table-block table td {
 	text-align: center;
 	color: #333333;
 	font-weight: 400;
 	font-size: 18px;
   }
   
-  tr:nth-child(odd) {
+  .table-block table tr:nth-child(odd) {
 	background-color: #7db7edd1;
   }
   
-  tr:nth-child(even) {
+  .table-block table tr:nth-child(even) {
 	background-color: #f5f5f58e;
   }
   
-  th a.sort-by {
+  .table-block table th a.sort-by {
 	padding-right: 18px;
 	position: relative;
   }
@@ -353,3 +353,8 @@
 	height: 280px;
 }
 
+.table-nui-container
+{
+    width: 100%;
+    float: right;
+}

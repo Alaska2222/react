@@ -3,9 +3,8 @@ import BioInput from '../components/BioInput';
 import profile from "../assets/nupl.jpg"
 import Button from '../components/Button';
 import DeleteButton from '../components/DeleteButton';
-import {SearchBar} from '../components/SearchBar';
-import { SearchResultsList } from '../components/SearchResultsList';
 import { AnimatedPage } from '../components/AnimatedPage';
+import TableMui from '../components/TableMui';
 
 export default function Admin(){
 
@@ -93,9 +92,8 @@ export default function Admin(){
                         </div>
                     </div>
                         <div className="journal-block">
-                            <div className='search-bar-container'>
-                                <SearchBar setResults={setResults}/>
-                                <SearchResultsList results={results}/>
+                            <div className='table-nui-container'>
+                                <TableMui />
                             </div>
                         </div>
             </div>

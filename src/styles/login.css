@@ -1,3 +1,7 @@
+.login-wrapper{
+  overflow: hidden;
+}
+
 label {
     font-size: 12px;
     opacity: .8;

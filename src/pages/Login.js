@@ -56,6 +56,7 @@ export default function Login() {
   return (
     <AnimatedPage>
       <ToastContainer autoClose={1300}/>
+      <div className="login-wrapper">
       <div className="form-block">
         <div className="side-image"></div>
         <form method="#" className="log-in" onSubmit={handleSubmit}>
@@ -98,6 +99,7 @@ export default function Login() {
           </h3>
           <Button Title="Log in" Id="login-btn" />
         </form>
+      </div>
       </div>
     </AnimatedPage>
   );
