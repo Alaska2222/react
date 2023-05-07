@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import DeleteButton from '../components/DeleteButton';
 import { AnimatedPage } from '../components/AnimatedPage';
 import TableMui from '../components/TableMui';
+import Swal from "sweetalert2"
 
 export default function Admin(){
 
@@ -85,16 +86,47 @@ export default function Admin(){
         fetchData();
     }, []);
     const handleUpdateClick = () => {
-        if(isDisabled){
-            setIsDisabled(false);
+        if (isDisabled) {
+          setIsDisabled(false);
+        } else {
+          const updatedTeacher = {
+            Firstname: name,
+            Surname: surname,
+            Email: email,
+            Age: Number(age),
+            Phone: phone,
+            SubjectId: subject,
+          };
+          console.log(updatedTeacher)
+          fetch(`http://127.0.0.1:5000/teachers/${username}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Basic ' + btoa(username + ':' + password),
+            },
+            body: JSON.stringify(updatedTeacher),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }else{
+                setIsDisabled(true);
+                Swal.fire(
+                    'Success!',
+                    'Teacher was updated!',
+                    'success'
+                  )
+              }
+              return response.json();
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+         
+         
         }
-        else{
-            setIsDisabled(true)
-            alert('Fields are disabled. Click the update button to enable them.');
-              
-        }
-        console.log(isDisabled)
-    }
+      };
+      
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
