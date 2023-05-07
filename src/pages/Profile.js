@@ -8,7 +8,7 @@ import Linechart from '../components/LineChart';
 import DeleteButton from '../components/DeleteButton';
 import "../styles/profile.css"
 import { AnimatedPage } from '../components/AnimatedPage';
-
+import Swal from "sweetalert2"
 
 export default function Profile(){
     const [name, setName] = useState('')
@@ -17,11 +17,23 @@ export default function Profile(){
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
     const [group, setGroup] = useState('')
-
+    const [isDisabled, setIsDisabled] = useState(true)
+    let [otherrecords, setOtherRecord] = useState([])
     const username = localStorage.getItem('username');
     const password = localStorage.getItem('password');
 
     let [records, setRecord] = useState([])
+      useEffect(() => {
+        fetch("http://127.0.0.1:5000/groups")
+        .then((response)=>{
+            return response.json(); 
+        })
+        .then((data)=>{
+        setOtherRecord(data)
+        
+        })
+    .catch(err => console.log(err))
+    }, [])
     useEffect(() => {
         const fetchData = () => {
             try {
@@ -137,7 +149,83 @@ export default function Profile(){
     });
   }, [records, sortColumn, sortDirection]);
 
-   
+  const handleUpdateClick = () => {
+    if (isDisabled) {
+      setIsDisabled(false);
+    } else {
+      const updatedStudent = {
+        Firstname: name,
+        Surname: surname,
+        Email: email,
+        Age: Number(age),
+        Phone: phone,
+        GroupId: group,
+      };
+      console.log(updatedStudent)
+      fetch(`http://127.0.0.1:5000/student/${username}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Basic ' + btoa(username + ':' + password),
+        },
+        body: JSON.stringify(updatedStudent),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }else{
+            setIsDisabled(true);
+            Swal.fire(
+                'Success!',
+                'Student was updated!',
+                'success'
+              )
+          }
+          return response.json();
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+     
+     
+    }
+  };
+  
+
+const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    if (!isDisabled) {
+      if (name === 'group') {
+        setGroup(value);
+      } else {
+        switch (name) {
+          case 'name':
+            setName(value);
+            break;
+          case 'surname':
+            setSurname(value);
+            break;
+          case 'age':
+            setAge(value);
+            break;
+          case 'email':
+            setEmail(value);
+            break;
+          case 'phone':
+            setPhone(value);
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  };
+  
+  const options = otherrecords.map((record) => (
+    <option key={record.GroupId} value={record.GroupId}>
+      {record.GroupId}
+    </option>
+  ));
     return (
         <AnimatedPage>
             <h1 id="profile-title"><span className="highlight">Welcome, to the student profile!</span></h1>
@@ -146,15 +234,38 @@ export default function Profile(){
                     <img id="user-logo"src={profile} alt="profile logo"/>
                     <h3>{username}</h3>
                     <div className="inputs-block">
-                        <BioInput Label="Name" Name={name} Type="text" Id="name"/>
-                        <BioInput Label="Surname" Name={surname} Type="text" Id="surname"/>
-                        <BioInput Label="Group" Name={group} Type="number" Id="group"/>
-                        <BioInput Label="Age" Name={age} Type="number" Id="age"/>
-                        <BioInput Label="Phone" Name={phone} Type="tel" Id="phone"/>
-                        <BioInput Label="Email" Name={email} Type="email" Id="email"/>
+                        <BioInput Label="Name" Name={name} Type="text" Id="name" Disabled={isDisabled}
+                  onClick={handleInputChange} />
+                        <BioInput Label="Surname" Name={surname} Type="text" Id="surname" Disabled={isDisabled}
+                  onClick={handleInputChange}/>
+                  {isDisabled ? (
+                  <BioInput
+                    Label="GroupId"
+                    Name={group}
+                    Type="text"
+                    Id="group"
+                    Disabled={isDisabled}
+                    onClick={handleInputChange}
+                  />
+                ) : (
+                  <select
+                    name="group"
+                    id="group"
+                    value={group}
+                    onChange={handleInputChange}
+                  >
+                    {options}
+                  </select>
+                )}
+                        <BioInput Label="Age" Name={age} Type="number" Id="age" Disabled={isDisabled}
+                  onClick={handleInputChange}/>
+                        <BioInput Label="Phone" Name={phone} Type="tel" Id="phone" Disabled={isDisabled}
+                  onClick={handleInputChange}/>
+                        <BioInput Label="Email" Name={email} Type="email" Id="email" Disabled={isDisabled}
+                  onClick={handleInputChange}/>
                     </div>
                     <div className ="button-group">
-                        <Button Id="update-btn" Title="Update"/>
+                        <Button Id="update-btn" Title="Update" onClick={handleUpdateClick}/>
                         <DeleteButton username={username} />
                     </div>
                     </div>
