@@ -21,26 +21,30 @@ const TableMui = () => {
   const username = localStorage.getItem("username")
   const password = localStorage.getItem("password")
     let [records, setRecords] = useState([]);
-    let result =[]
+    let result = []
     useEffect(() => {
-        fetch(`http://127.0.0.1:5000/students`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Basic ' + btoa(username + ':' + password)
-                    }
-                })
-        .then((response) => {
-            return response.json();
-        })
-        .then((data) => {
-            setRecords(data);
-        })
-        .catch((err) => console.log(err));
+      async function fetchData() {
+        try {
+          const response = await fetch(`http://127.0.0.1:5000/students`, {
+            method: 'GET',
+            headers: {
+              'Authorization': 'Basic ' + btoa(username + ':' + password)
+            }
+          });
+          const data = await response.json();
+          setRecords(data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      fetchData();
     }, []);
-    records.map((obj) => (
-        result.push(obj.StudentId)
-    ))
-  
+    
+    useEffect(() => {
+      result = records.map((obj) => obj.StudentId);
+
+    }, [records]);
+    
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});

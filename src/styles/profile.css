@@ -358,3 +358,25 @@
     width: 100%;
     float: right;
 }
+
+select{
+	color: black;
+	font-weight: 400;
+	font-size: 16px;
+	width: 90%;
+	height: 100%;
+	margin-left: 1rem;
+	margin-top: 1rem;
+	padding: 12px 10px;
+	min-width: 270px;
+	border: none;
+	border-top: solid 1px #555;
+	border-radius: 4px;
+	box-sizing: border-box;
+	
+}
+
+select:focus {
+	outline: none;
+  }
+

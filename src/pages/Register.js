@@ -23,7 +23,6 @@ export default function Register() {
   const [records, setRecord] = useState([])
   const [otherrecords, setOtherRecord] = useState([])
 
-  const nameRegex = /^[a-zA-Z ]+$/;
   let menuRef = useRef()
 
   useEffect(() => {

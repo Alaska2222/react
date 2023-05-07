@@ -15,11 +15,25 @@ export default function Admin(){
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
     const [subject, setSubject] = useState('')
+    const [isDisabled, setIsDisabled] = useState(true)
 
     const username = localStorage.getItem('username');
     const password = localStorage.getItem('password');
-
+    const [otherrecords, setOtherRecord] = useState([])
     let [records, setRecord] = useState([])
+
+    useEffect(() => {
+        fetch("http://127.0.0.1:5000/subjects")
+    .then((response)=>{
+         return response.json(); 
+     })
+    .then((data)=>{
+     setOtherRecord(data)
+     
+     })
+    .catch(err => console.log(err))
+     }, [])
+     
     useEffect(() => {
         const fetchData = () => {
             try {
@@ -70,33 +84,134 @@ export default function Admin(){
     
         fetchData();
     }, []);
-    return (
-        <AnimatedPage>
-            <h1 id="profile-title"><span className="highlight">Welcome to the, admin profile!</span></h1>
-                <div className="wrapper-admin"> 
-                    <div className="bio-block">
-                        <img id="admin-logo"src={profile} alt="profile logo"/>
-                        <h3>{username}</h3>
-                        <div className="inputs-block">
-                        <BioInput Label="Name" Name={name} Type="text" Id="name"/>
-                        <BioInput Label="Surname" Name={surname} Type="text" Id="surname"/>
-                        <BioInput Label="Subject" Name={subject} Type="text" Id="subject"/>
-                        <BioInput Label="Age" Name={age} Type="number" Id="age"/>
-                        <BioInput Label="Phone" Name={phone} Type="tel" Id="phone"/>
-                        <BioInput Label="Email" Name={email} Type="email" Id="email"/>
-                        </div>
+    const handleUpdateClick = () => {
+        if(isDisabled){
+            setIsDisabled(false);
+        }
+        else{
+            setIsDisabled(true)
+            alert('Fields are disabled. Click the update button to enable them.');
+              
+        }
+        console.log(isDisabled)
+    }
 
-                        <div className ="button-group">
-                            <Button Id="update-btn" Title="Update"/>
-                            <DeleteButton username={username} />
-                        </div>
-                    </div>
-                        <div className="journal-block">
-                            <div className='table-nui-container'>
-                                <TableMui />
-                            </div>
-                        </div>
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        if (!isDisabled) {
+          if (name === 'subject') {
+            setSubject(value);
+          } else {
+            switch (name) {
+              case 'name':
+                setName(value);
+                break;
+              case 'surname':
+                setSurname(value);
+                break;
+              case 'age':
+                setAge(value);
+                break;
+              case 'email':
+                setEmail(value);
+                break;
+              case 'phone':
+                setPhone(value);
+                break;
+              default:
+                break;
+            }
+          }
+        }
+      };
+      
+      const options = otherrecords.map((record) => (
+        <option key={record.SubjectId} value={record.SubjectId}>
+          {record.SubjectId}
+        </option>
+      ));
+      
+      return (
+        <AnimatedPage>
+          <h1 id="profile-title">
+            <span className="highlight">Welcome to the, admin profile!</span>
+          </h1>
+          <div className="wrapper-admin">
+            <div className="bio-block">
+              <img id="admin-logo" src={profile} alt="profile logo" />
+              <h3>{username}</h3>
+              <div className="inputs-block">
+                <BioInput
+                  Label="Name"
+                  Name={name}
+                  Type="text"
+                  Id="name"
+                  Disabled={isDisabled}
+                  onClick={handleInputChange}
+                />
+                <BioInput
+                  Label="Surname"
+                  Name={surname}
+                  Type="text"
+                  Id="surname"
+                  Disabled={isDisabled}
+                  onClick={handleInputChange}
+                />
+            
+                <BioInput
+                  Label="Age"
+                  Name={age}
+                  Type="number"
+                  Id="age"
+                  Disabled={isDisabled}
+                  onClick={handleInputChange}
+                />
+                <BioInput
+                  Label="Phone"
+                  Name={phone}
+                  Type="tel"
+                  Id="phone"
+                  Disabled={isDisabled}
+                  onClick={handleInputChange}
+                />
+                <BioInput
+                  Label="Email"
+                  Name={email}
+                  Type="email"
+                  Id="email"
+                  Disabled={isDisabled}
+                  onClick={handleInputChange}
+                />
+                {isDisabled ? (
+                  <BioInput
+                    Label="Subject"
+                    Name={subject}
+                    Type="text"
+                    Id="subject"
+                    Disabled={isDisabled}
+                    onClick={handleInputChange}
+                  />
+                ) : (
+                  <select
+                    name="subject"
+                    id="subject"
+                    value={subject}
+                    onChange={handleInputChange}
+                  >
+                    {options}
+                  </select>
+                )}
+              </div>
+      
+              <div className="button-group">
+                <Button Id="update-btn" Title="Update" onClick={handleUpdateClick} />
+                <DeleteButton username={username} />
+              </div>
             </div>
+            <div className="journal-block">
+              <div className="table-nui-container"></div>
+            </div>
+          </div>
         </AnimatedPage>
-    )
+      );
 }
