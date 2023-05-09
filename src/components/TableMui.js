@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import MaterialReactTable from 'material-react-table';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   Box,
   Button,
@@ -12,27 +14,24 @@ import {
   Tooltip,
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import { data } from './Data.js';
 import { RiDeleteBin4Fill } from "react-icons/ri";
 import {AiFillEdit} from "react-icons/ai"
 
 
 const TableMui = () => {
-  const username = localStorage.getItem("username")
-  const password = localStorage.getItem("password")
-    let [records, setRecords] = useState([]);
-    let result = []
+  const username =  window.localStorage.getItem("username")
+    let [marks, setMarks] = useState([])
+    let result = ['Alaska11', 'Student_new', 'TOP_USER228']
+
     useEffect(() => {
       async function fetchData() {
         try {
-          const response = await fetch(`http://127.0.0.1:5000/students`, {
+          const response = await fetch(`http://127.0.0.1:5000/marks/${username}`, {
             method: 'GET',
-            headers: {
-              'Authorization': 'Basic ' + btoa(username + ':' + password)
-            }
           });
           const data = await response.json();
-          setRecords(data);
+          setMarks(data);
+          
         } catch (error) {
           console.log(error);
         }
@@ -40,25 +39,18 @@ const TableMui = () => {
       fetchData();
     }, []);
     
-    useEffect(() => {
-      result = records.map((obj) => obj.StudentId);
-
-    }, [records]);
     
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [tableData, setTableData] = useState(() => data);
   const [validationErrors, setValidationErrors] = useState({});
-
+ 
   const handleCreateNewRow = (values) => {
-    tableData.push(values);
-    setTableData([...tableData]);
+    marks.push(values);
   };
 
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
     if (!Object.keys(validationErrors).length) {
-      tableData[row.index] = values;
+      marks[row.index] = values;
       //send/receive api updates here, then refetch or update local table data for re-render
-      setTableData([...tableData]);
       exitEditingMode(); 
     }
   };
@@ -120,14 +112,17 @@ const TableMui = () => {
       {
         accessorKey: 'StudentId',
         header: 'Student ID',
-        
         muiTableBodyCellEditTextFieldProps: {
           select: true,
-          children: result.map((user) => (
-            <MenuItem key={user} value={user}>
-              {user}
-            </MenuItem>
-          )),
+          children: (
+            <>
+              {result.map((user) => (
+                <MenuItem key={user} value={user}>
+                  {user}
+                </MenuItem>
+              ))}
+            </>
+          ),
         },
       },
       {
@@ -172,7 +167,7 @@ const TableMui = () => {
           },
         }}
         columns={columns}
-        data={tableData}
+        data={marks}
         editingMode="modal" 
         muiTablePaginationProps={{
           rowsPerPageOptions: [5, 10, 15],
@@ -194,18 +189,22 @@ const TableMui = () => {
         renderRowActions={({ row, table }) => (
           <Box sx={{ display: 'flex', gap: '1rem' }}>
             <Tooltip arrow placement="left" title="Edit">
-              <AiFillEdit size={25} onMouseOver={({target})=>target.style.color="grey"}
-                                    onMouseOut={({target})=>target.style.color="black"}
-                                    onClick={() => table.setEditingRow(row)}>
-                <Edit />
-              </AiFillEdit>
+              <span>
+                <AiFillEdit size={25} onMouseOver={({target})=>target.style.color="grey"}
+                                          onMouseOut={({target})=>target.style.color="black"}
+                                          onClick={() => table.setEditingRow(row)}>
+                  <Edit />
+                </AiFillEdit>
+              </span>
             </Tooltip>
             <Tooltip arrow placement="right" title="Delete">
-              <RiDeleteBin4Fill color="rgba(239, 64, 64, 0.875)" size={22} 
-              onMouseOver={({target})=>target.style.color="rgba(124, 3, 3, 0.875)"}
-              onMouseOut={({target})=>target.style.color="rgba(239, 64, 64, 0.875)"}>
-                <Delete />
-              </RiDeleteBin4Fill>
+              <span>
+                <RiDeleteBin4Fill color="rgba(239, 64, 64, 0.875)" size={22} 
+                onMouseOver={({target})=>target.style.color="rgba(124, 3, 3, 0.875)"}
+                onMouseOut={({target})=>target.style.color="rgba(239, 64, 64, 0.875)"}>
+                  <Delete />
+                </RiDeleteBin4Fill>
+              </span>
             </Tooltip>
           </Box>
         )}
@@ -231,38 +230,96 @@ const TableMui = () => {
         open={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         onSubmit={handleCreateNewRow}
-      />
+/>
     </>
   );
 };
 
-//example of creating a mui dialog modal for creating new rows
 export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
   const [values, setValues] = useState(() =>
     columns.reduce((acc, column) => {
-      acc[column.accessorKey ?? ''] = '';
+      if (column.accessorKey === "Value" || column.accessorKey === "DateId" || column.accessorKey === "StudentId") {
+        acc[column.accessorKey] = '';
+      }
       return acc;
     }, {}),
   );
 
+  const username =  window.localStorage.getItem("username")
+  const password =  window.localStorage.getItem("password")
+  let [marks, setMarks] = useState([])
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/marks/${username}`, {
+          method: 'GET',
+        });
+        const data = await response.json();
+        setMarks(data);
+        
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, []);
+  const subject = marks.length > 0 ? marks[0].SubjectId : null;
+
   const handleSubmit = () => {
-    //put your validation logic here
-    onSubmit(values);
+    console.log(values);
+  
+    const data_sbmt = {
+      StudentId: values.StudentId,
+      SubjectId: subject,
+      TeacherId: username,
+      DateId: values.DateId,
+      Value: Number(values.Value),
+    };
+  
+    fetch('http://127.0.0.1:5000/teacher', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa(username + ':' + password)
+      },
+      body: JSON.stringify(data_sbmt),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+       
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  
     onClose();
   };
+  
+  
+  let result = ['Alaska11', 'Student_new', 'TOP_USER228']
 
+
+  
   return (
     <Dialog open={open}>
-      <DialogContent>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <Stack
-            sx={{
-              width: '50%',
-              minWidth: { xs: '300px', sm: '360px', md: '400px' },
-              gap: '1.5rem',
-            }}
-          >
-            {columns.map((column) => (
+    <DialogContent>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <Stack
+          sx={{
+            width: '50%',
+            minWidth: { xs: '300px', sm: '360px', md: '400px' },
+            gap: '1.5rem',
+          }}
+        >
+          {columns
+            .filter((column) => ['Value', 'DateId', 'StudentId'].includes(column.accessorKey))
+            .map((column) => (
               <TextField
                 key={column.accessorKey}
                 label={column.header}
@@ -270,21 +327,42 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
                 onChange={(e) =>
                   setValues({ ...values, [e.target.name]: e.target.value })
                 }
-              />
+                type={column.accessorKey === 'DateId' ? 'date' : 'text'}
+                InputLabelProps={
+                  column.accessorKey === 'DateId' ? { shrink: true } : {}
+                }
+                select={column.accessorKey === 'StudentId'}
+              >
+                {column.accessorKey === 'StudentId' &&
+                result.map((user) => (
+                    <MenuItem key={user} value={user}>
+                      {user}
+                    </MenuItem>
+                  ))}
+              </TextField>
             ))}
-          </Stack>
-        </form>
-      </DialogContent>
-      <DialogActions sx={{ p: '1.25rem' }}>
-        <Button onClick={onClose} variant='outlined'
-        sx={{ borderRadius: "10rem",}}  
-        >Cancel</Button>
-        <Button color="success" onClick={handleSubmit} variant="contained"
-        sx={{ borderRadius: "10rem",}}  >
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </Stack>
+      </form>
+    </DialogContent>
+    <DialogActions sx={{ p: '1.25rem' }}>
+      <Button
+        onClick={onClose}
+        variant='outlined'
+        sx={{ borderRadius: '10rem' }}
+      >
+        Cancel
+      </Button>
+      <Button
+        color='success'
+        onClick={handleSubmit}
+        variant='contained'
+        sx={{ borderRadius: '10rem' }}
+      >
+        Submit
+      </Button>
+    </DialogActions>
+  </Dialog>
+  
   );
 };
 

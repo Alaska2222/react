@@ -4,8 +4,8 @@ import profile from "../assets/nupl.jpg"
 import Button from '../components/Button';
 import DeleteButton from '../components/DeleteButton';
 import { AnimatedPage } from '../components/AnimatedPage';
-import TableMui from '../components/TableMui';
 import Swal from "sweetalert2"
+import TableMui from '../components/TableMui';
 
 export default function Admin(){
 
@@ -241,7 +241,9 @@ export default function Admin(){
               </div>
             </div>
             <div className="journal-block">
-              <div className="table-nui-container"></div>
+              <div className="table-nui-container">
+                <TableMui />
+              </div>
             </div>
           </div>
         </AnimatedPage>

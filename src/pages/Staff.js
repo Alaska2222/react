@@ -8,7 +8,7 @@ export default function Staff(){
     let [records, setRecord] = useState([])
     useEffect(() => {
         document.title = "Our Staff"
-        fetch("http://127.0.0.1:5000/teachers")
+        fetch("http://localhost:5000/teachers")
     .then((response)=>{
          return response.json(); 
      })
