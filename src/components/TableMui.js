@@ -27,6 +27,9 @@ const TableMui = () => {
         try {
           const response = await fetch(`http://127.0.0.1:5000/marks/${username}`, {
             method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            }
           });
           const data = await response.json();
           setMarks(data);
@@ -48,8 +51,7 @@ const TableMui = () => {
 
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
     if (!Object.keys(validationErrors).length) {
-      marks[row.index] = values;
-      const password =  window.localStorage.getItem("password")
+      const password = window.localStorage.getItem('password');
       const data_sbmt = {
         MarkId: values.MarkId,
         StudentId: values.StudentId,
@@ -58,20 +60,26 @@ const TableMui = () => {
         DateId: values.DateId,
         Value: Number(values.Value),
       };
-      const response = await fetch(`http://127.0.0.1:5000/teacher/${values.StudentId}/${values.MarkId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + btoa(username + ':' + password)
-        },
-        body: JSON.stringify(data_sbmt),
-      });
+      const response = await fetch(
+        `http://127.0.0.1:5000/teacher/${values.StudentId}/${values.MarkId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Basic ' + btoa(username + ':' + password),
+          },
+          body: JSON.stringify(data_sbmt),
+        }
+      );
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      
-      exitEditingMode(); 
+
+      const updatedMarks = [...marks];
+      updatedMarks[row.index] = values;
+      setMarks(updatedMarks);
+      exitEditingMode();
     }
   };
 
@@ -103,6 +111,7 @@ const TableMui = () => {
             const options = {
               method: 'DELETE',
               headers: {
+                'Content-Type': 'application/json',
                 'Authorization': 'Basic ' + btoa(username + ':' + localStorage.getItem("password"))
               }
             };
@@ -298,6 +307,9 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
       try {
         const response = await fetch(`http://127.0.0.1:5000/marks/${username}`, {
           method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
         });
         const data = await response.json();
         setMarks(data);

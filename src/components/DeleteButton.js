@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2"
 
 function DeleteButton({ username }) {
-  const [confirmed, setConfirmed] = useState(false);
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -31,6 +30,7 @@ function DeleteButton({ username }) {
             const options = {
               method: 'DELETE',
               headers: {
+                'Content-Type': 'application/json',
                 'Authorization': 'Basic ' + btoa(localStorage.getItem('username') + ':' + localStorage.getItem('password'))
               }
             };

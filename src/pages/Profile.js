@@ -38,8 +38,10 @@ export default function Profile(){
         const fetchData = () => {
             try {
                 fetch(`http://127.0.0.1:5000/student/${username}`, {
+                    
                     method: 'GET',
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': 'Basic ' + btoa(username + ':' + password)
                     }
                 })
@@ -62,8 +64,10 @@ export default function Profile(){
                     document.title = "User Profile";
     
                     return fetch(`http://127.0.0.1:5000/students/${username}`, {
+                        
                         method: 'GET',
                         headers: {
+                          'Content-Type': 'application/json',
                             'Authorization': 'Basic ' + btoa(username + ':' + password)
                         }
                     });

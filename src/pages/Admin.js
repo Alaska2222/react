@@ -41,6 +41,7 @@ export default function Admin(){
                 fetch(`http://127.0.0.1:5000/teachers/${username}`, {
                     method: 'GET',
                     headers: {
+                      'Content-Type': 'application/json',
                         'Authorization': 'Basic ' + btoa(username + ':' + password)
                     }
                 })
@@ -65,6 +66,7 @@ export default function Admin(){
                     return fetch(`http://127.0.0.1:5000/teachers/${username}`, {
                         method: 'GET',
                         headers: {
+                          'Content-Type': 'application/json',
                             'Authorization': 'Basic ' + btoa(username + ':' + password)
                         }
                     });
