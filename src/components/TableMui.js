@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import MaterialReactTable from 'material-react-table';
-import { toast, ToastContainer } from 'react-toastify';
+import Swal from "sweetalert2"
 import 'react-toastify/dist/ReactToastify.css';
 import {
   Box,
@@ -21,7 +21,6 @@ import {AiFillEdit} from "react-icons/ai"
 const TableMui = () => {
   const username =  window.localStorage.getItem("username")
     let [marks, setMarks] = useState([])
-    let result = ['Alaska11', 'Student_new', 'TOP_USER228']
 
     useEffect(() => {
       async function fetchData() {
@@ -50,7 +49,28 @@ const TableMui = () => {
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
     if (!Object.keys(validationErrors).length) {
       marks[row.index] = values;
-      //send/receive api updates here, then refetch or update local table data for re-render
+      const password =  window.localStorage.getItem("password")
+      const data_sbmt = {
+        MarkId: values.MarkId,
+        StudentId: values.StudentId,
+        SubjectId: values.SubjectId,
+        TeacherId: username,
+        DateId: values.DateId,
+        Value: Number(values.Value),
+      };
+      const response = await fetch(`http://127.0.0.1:5000/teacher/${values.StudentId}/${values.MarkId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + btoa(username + ':' + password)
+        },
+        body: JSON.stringify(data_sbmt),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      
       exitEditingMode(); 
     }
   };
@@ -59,19 +79,49 @@ const TableMui = () => {
     setValidationErrors({});
   };
 
-  //const handleDeleteRow = useCallback(
-  //  (row) => {
-   //   if (
-   /////    !confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)
-    //  ) {
-    //    return;
-   //   }
-      //send api delete request here, then refetch or update local table data for re-render
-    //  tableData.splice(row.index, 1);
-    //  setTableData([...tableData]);
-   // },
-   // [tableData],
- // );
+  
+  const handleDeleteRow = useCallback(
+    (row) => {
+      const std = row._valuesCache.StudentId
+      const id = row._valuesCache.MarkId
+      Swal.fire({
+        title: 'Are you sure you want to delete this mark?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#32CD32',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire(
+            'Deleted!',
+            'Mark was deleted!',
+            'success'
+          )
+          .then(() => {
+            const options = {
+              method: 'DELETE',
+              headers: {
+                'Authorization': 'Basic ' + btoa(username + ':' + localStorage.getItem("password"))
+              }
+            };
+            fetch(`http://127.0.0.1:5000/teacher/${std}/${id}/${username}`, options)
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                marks.splice(row.index, 1);
+                setMarks([...marks]);
+                
+              });
+          });
+        }
+      });
+    },
+    [marks]
+  );
+  
 
   const getCommonEditTextFieldProps = useCallback(
     (cell) => {
@@ -112,19 +162,10 @@ const TableMui = () => {
       {
         accessorKey: 'StudentId',
         header: 'Student ID',
-        muiTableBodyCellEditTextFieldProps: {
-          select: true,
-          children: (
-            <>
-              {result.map((user) => (
-                <MenuItem key={user} value={user}>
-                  {user}
-                </MenuItem>
-              ))}
-            </>
-          ),
-        },
+        enableEditing: false,
+        
       },
+      
       {
         accessorKey: 'SubjectId',
         header: 'Subject',
@@ -155,6 +196,9 @@ const TableMui = () => {
     [getCommonEditTextFieldProps],
   );
 
+
+  
+  
   return (
     <>
       <MaterialReactTable
@@ -201,7 +245,8 @@ const TableMui = () => {
               <span>
                 <RiDeleteBin4Fill color="rgba(239, 64, 64, 0.875)" size={22} 
                 onMouseOver={({target})=>target.style.color="rgba(124, 3, 3, 0.875)"}
-                onMouseOut={({target})=>target.style.color="rgba(239, 64, 64, 0.875)"}>
+                onMouseOut={({target})=>target.style.color="rgba(239, 64, 64, 0.875)"}
+                onClick={() => handleDeleteRow(row)}>
                   <Delete />
                 </RiDeleteBin4Fill>
               </span>
@@ -263,49 +308,49 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
     }
     fetchData();
   }, []);
-  const subject = marks.length > 0 ? marks[0].SubjectId : null;
+const subject = marks.length > 0 ? marks[0].SubjectId : null;
 
-  const handleSubmit = () => {
-    console.log(values);
-  
-    const data_sbmt = {
-      StudentId: values.StudentId,
-      SubjectId: subject,
-      TeacherId: username,
-      DateId: values.DateId,
-      Value: Number(values.Value),
-    };
-  
-    fetch('http://127.0.0.1:5000/teacher', {
+const handleSubmit = async () => {
+  console.log(values);
+
+  const data_sbmt = {
+    StudentId: values.StudentId,
+    SubjectId: subject,
+    TeacherId: username,
+    DateId: values.DateId,
+    Value: Number(values.Value),
+  };
+
+  try {
+    const response = await fetch('http://127.0.0.1:5000/teacher', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Basic ' + btoa(username + ':' + password)
       },
       body: JSON.stringify(data_sbmt),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Success:', data);
-       
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  
-    onClose();
-  };
-  
-  
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    if (response.ok) {
+      onClose();
+      Swal.fire(
+      'Success!',
+      'Mark was added!',
+      'success'
+    );
+    }
+    
+  } catch (error) {
+    console.error('Error:', error);
+    
+  }
+
+};
   let result = ['Alaska11', 'Student_new', 'TOP_USER228']
-
-
-  
   return (
     <Dialog open={open}>
     <DialogContent>
@@ -324,6 +369,7 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
                 key={column.accessorKey}
                 label={column.header}
                 name={column.accessorKey}
+                
                 onChange={(e) =>
                   setValues({ ...values, [e.target.name]: e.target.value })
                 }
