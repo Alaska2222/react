@@ -23,70 +23,61 @@ export default function Profile(){
     const password = localStorage.getItem('password');
 
     let [records, setRecord] = useState([])
-      useEffect(() => {
-        fetch("http://127.0.0.1:5000/groups")
-        .then((response)=>{
-            return response.json(); 
-        })
-        .then((data)=>{
-        setOtherRecord(data)
-        
-        })
-    .catch(err => console.log(err))
-    }, [])
+
+    
     useEffect(() => {
-        const fetchData = () => {
-            try {
-                fetch(`http://127.0.0.1:5000/student/${username}`, {
-                    
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + btoa(username + ':' + password)
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const { Firstname, Surname, Age, Email, Phone, GroupId } = data.Student;
+      const fetchGroups = async () => {
+        try {
+          const response = await fetch("http://127.0.0.1:5000/groups");
+          const data = await response.json();
+          setOtherRecord(data);
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+   
+      const fetchData = async () => {
+        try {
+          const headers = new Headers();
+          headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+          headers.set('content-type', 'application/json');
+          console.log(username, password, headers)
+          const response = await fetch(`http://127.0.0.1:5000/student/${username}`, {
+            method: "GET",
+            headers,
+          });
     
-                    setName(Firstname);
-                    setSurname(Surname);
-                    setAge(Age);
-                    setEmail(Email);
-                    setPhone(Phone);
-                    setGroup(GroupId);
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
     
-                    document.title = "User Profile";
+          const data = await response.json();
     
-                    return fetch(`http://127.0.0.1:5000/students/${username}`, {
-                        
-                        method: 'GET',
-                        headers: {
-                          'Content-Type': 'application/json',
-                            'Authorization': 'Basic ' + btoa(username + ':' + password)
-                        }
-                    });
-                })
-                .then(response => {
-                    return response.json();
-                })
-                .then(data => {
-                    setRecord(data);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        };
+          const { Firstname, Surname, Age, Email, Phone, GroupId } = data.Student;
     
-        fetchData();
+          setName(Firstname);
+          setSurname(Surname);
+          setAge(Age);
+          setEmail(Email);
+          setPhone(Phone);
+          setGroup(GroupId);
+    
+          document.title = "User Profile";
+
+          const response2 = await fetch(`http://127.0.0.1:5000/students/${username}`, {
+            method: "GET",
+            headers,
+          });
+    
+          const data2 = await response2.json();
+          setRecord(data2);
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+    
+      fetchGroups();
+      fetchData();
     }, []);
     
     const calculateAverageByTeacher = (records) => {
@@ -166,12 +157,12 @@ export default function Profile(){
         GroupId: group,
       };
       console.log(updatedStudent)
+      const headers = new Headers();
+      headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+      headers.set('content-type', 'application/json');
       fetch(`http://127.0.0.1:5000/student/${username}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Basic ' + btoa(username + ':' + password),
-        },
+        headers,
         body: JSON.stringify(updatedStudent),
       })
         .then((response) => {

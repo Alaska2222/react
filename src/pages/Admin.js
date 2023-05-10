@@ -24,69 +24,51 @@ export default function Admin(){
     let [records, setRecord] = useState([])
 
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/subjects")
-    .then((response)=>{
-         return response.json(); 
-     })
-    .then((data)=>{
-     setOtherRecord(data)
-     
-     })
-    .catch(err => console.log(err))
-     }, [])
-     
-    useEffect(() => {
-        const fetchData = () => {
-            try {
-                fetch(`http://127.0.0.1:5000/teachers/${username}`, {
-                    method: 'GET',
-                    headers: {
-                      'Content-Type': 'application/json',
-                        'Authorization': 'Basic ' + btoa(username + ':' + password)
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const { Firstname, Surname, Age, Email, Phone, SubjectId } = data.Teacher;
-    
-                    setName(Firstname);
-                    setSurname(Surname);
-                    setAge(Age);
-                    setEmail(Email);
-                    setPhone(Phone);
-                    setSubject(SubjectId);
-    
-                    document.title = "Admin Profile";
-    
-                    return fetch(`http://127.0.0.1:5000/teachers/${username}`, {
-                        method: 'GET',
-                        headers: {
-                          'Content-Type': 'application/json',
-                            'Authorization': 'Basic ' + btoa(username + ':' + password)
-                        }
-                    });
-                })
-                .then(response => {
-                    return response.json();
-                })
-                .then(data => {
-                    setRecord(data);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            } catch (error) {
-                console.error('Error:', error);
+      const fetchData = async () => {
+        try {
+        
+          const subjectsResponse = await fetch("http://127.0.0.1:5000/subjects", {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
             }
-        };
+          });
+          const subjectsData = await subjectsResponse.json();
+          setOtherRecord(subjectsData);
     
-        fetchData();
+          const headers = new Headers();
+          headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+          headers.set('content-type', 'application/json');
+          const teacherResponse = await fetch(`http://127.0.0.1:5000/teachers/${username}`, {
+            method: 'GET',
+            headers,
+          });
+    
+          if (!teacherResponse.ok) {
+            throw new Error('Network response was not ok');
+          }
+    
+          const teacherData = await teacherResponse.json();
+    
+          const { Firstname, Surname, Age, Email, Phone, SubjectId } = teacherData.Teacher;
+    
+          setName(Firstname);
+          setSurname(Surname);
+          setAge(Age);
+          setEmail(Email);
+          setPhone(Phone);
+          setSubject(SubjectId);
+          setRecord(teacherData);
+    
+          document.title = "Admin Profile";
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      };
+    
+      fetchData();
     }, []);
+    
     const handleUpdateClick = () => {
         if (isDisabled) {
           setIsDisabled(false);
@@ -99,13 +81,12 @@ export default function Admin(){
             Phone: phone,
             SubjectId: subject,
           };
-          console.log(updatedTeacher)
+          const headers = new Headers();
+          headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+          headers.set('content-type', 'application/json');
           fetch(`http://127.0.0.1:5000/teachers/${username}`, {
             method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: 'Basic ' + btoa(username + ':' + password),
-            },
+            headers,
             body: JSON.stringify(updatedTeacher),
           })
             .then((response) => {

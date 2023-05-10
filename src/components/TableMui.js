@@ -60,14 +60,14 @@ const TableMui = () => {
         DateId: values.DateId,
         Value: Number(values.Value),
       };
+      const headers = new Headers();
+      headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+      headers.set('content-type', 'application/json');
       const response = await fetch(
         `http://127.0.0.1:5000/teacher/${values.StudentId}/${values.MarkId}`,
         {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Basic ' + btoa(username + ':' + password),
-          },
+          headers,
           body: JSON.stringify(data_sbmt),
         }
       );
@@ -305,7 +305,7 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`http://127.0.0.1:5000/marks/${username}`, {
+        const response = await fetch(`http://127.0.0.1:5000/marks/`+ username , {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -334,12 +334,12 @@ const handleSubmit = async () => {
   };
 
   try {
+    const headers = new Headers();
+    headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+    headers.set('content-type', 'application/json');
     const response = await fetch('http://127.0.0.1:5000/teacher', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + btoa(username + ':' + password)
-      },
+      headers,
       body: JSON.stringify(data_sbmt),
     });
 
@@ -362,7 +362,7 @@ const handleSubmit = async () => {
   }
 
 };
-  let result = ['Alaska11', 'Student_new', 'TOP_USER228']
+  const result = ['Alaska11', 'Student_new', 'TOP_USER228']
   return (
     <Dialog open={open}>
     <DialogContent>

@@ -25,15 +25,14 @@ export default function Login() {
     window.location.reload()
     setConsecutiveSuccess(0)
   };
-
+  const headers = new Headers();
+  headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+  headers.set('content-type', 'application/json');
   const handleSubmit = async (event) => {
     event.preventDefault()
     const response = await fetch("http://127.0.0.1:5000/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${btoa(`${username}:${password}`)}`,
-      },
+      headers,
     });
     
     if (response.ok) {
