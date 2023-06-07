@@ -1,18 +1,16 @@
-import { useRef, useState, useEffect } from "react";
-import { FaTimes, FaBars } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
-
+import { useRef } from "react"
+import { FaTimes, FaBars } from "react-icons/fa"
+import { Link } from "react-router-dom"
 
 function Navbar(props) {
-  const isLoggedIn = props.isLoggedIn;
-  const handleLogout = props.handleLogout;
-  const navRef = useRef();
+  const isLoggedIn = props.isLoggedIn
+  const handleLogout = props.handleLogout
+  const navRef = useRef()
 
   const showNavbar = () => {
-  navRef.current.classList.toggle("responsive_nav");
-  };
+  navRef.current.classList.toggle("responsive_nav")
+  }
   
-
   return (
     <header>
       <nav ref={navRef}>
@@ -62,4 +60,4 @@ function Navbar(props) {
   );
 }
 
-export default Navbar;
+export default Navbar

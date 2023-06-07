@@ -19,7 +19,9 @@ import {AiFillEdit} from "react-icons/ai"
 
 
 const TableMui = () => {
-  const username =  window.localStorage.getItem("username")
+    const token = window.localStorage.getItem('token')
+    const decodedToken = atob(token);
+    const [username] = decodedToken.split(':');
     let [marks, setMarks] = useState([])
 
     useEffect(() => {
@@ -51,7 +53,6 @@ const TableMui = () => {
 
   const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
     if (!Object.keys(validationErrors).length) {
-      const password = window.localStorage.getItem('password');
       const data_sbmt = {
         MarkId: values.MarkId,
         StudentId: values.StudentId,
@@ -60,8 +61,9 @@ const TableMui = () => {
         DateId: values.DateId,
         Value: Number(values.Value),
       };
+      const token = window.localStorage.getItem('token')
       const headers = new Headers();
-      headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+      headers.set('Authorization', `Basic ${token}`)
       headers.set('content-type', 'application/json');
       const response = await fetch(
         `http://127.0.0.1:5000/teacher/${values.StudentId}/${values.MarkId}`,
@@ -108,12 +110,15 @@ const TableMui = () => {
             'success'
           )
           .then(() => {
+            const token = window.localStorage.getItem('token')
+            const decodedToken = atob(token);
+            const [username] = decodedToken.split(':');
+            const headers = new Headers();
+            headers.set('Authorization', `Basic ${token}`)
+            headers.set('content-type', 'application/json');
             const options = {
               method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + btoa(username + ':' + localStorage.getItem("password"))
-              }
+              headers,
             };
             fetch(`http://127.0.0.1:5000/teacher/${std}/${id}/${username}`, options)
               .then(response => {
@@ -289,7 +294,7 @@ const TableMui = () => {
   );
 };
 
-export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
+export const CreateNewAccountModal = ({ open, columns, onClose }) => {
   const [values, setValues] = useState(() =>
     columns.reduce((acc, column) => {
       if (column.accessorKey === "Value" || column.accessorKey === "DateId" || column.accessorKey === "StudentId") {
@@ -299,12 +304,13 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
     }, {}),
   );
 
-  const username =  window.localStorage.getItem("username")
-  const password =  window.localStorage.getItem("password")
   let [marks, setMarks] = useState([])
   useEffect(() => {
     async function fetchData() {
       try {
+        const token = window.localStorage.getItem('token')
+        const decodedToken = atob(token);
+        const [username] = decodedToken.split(':');
         const response = await fetch(`http://127.0.0.1:5000/marks/`+ username , {
           method: 'GET',
           headers: {
@@ -323,7 +329,9 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
 const subject = marks.length > 0 ? marks[0].SubjectId : null;
 
 const handleSubmit = async () => {
-  console.log(values);
+  const token = window.localStorage.getItem('token')
+  const decodedToken = atob(token);
+  const [username] = decodedToken.split(':');
 
   const data_sbmt = {
     StudentId: values.StudentId,
@@ -334,8 +342,9 @@ const handleSubmit = async () => {
   };
 
   try {
+    const token = window.localStorage.getItem('token')
     const headers = new Headers();
-    headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+    headers.set('Authorization', `Basic ${token}`)
     headers.set('content-type', 'application/json');
     const response = await fetch('http://127.0.0.1:5000/teacher', {
       method: 'POST',
@@ -362,7 +371,25 @@ const handleSubmit = async () => {
   }
 
 };
-  const result = ['Alaska11', 'Student_new', 'TOP_USER228']
+
+let [result, setResult] = useState([])
+    useEffect(() => {
+      const token = window.localStorage.getItem('token')
+      const headers = new Headers();
+      headers.set('Authorization', `Basic ${token}`)
+      headers.set('content-type', 'application/json')
+      fetch('http://127.0.0.1:5000/students', {
+        method: 'GET',
+        headers,
+      })
+    .then((response)=>{
+         return response.json(); 
+     })
+    .then((data)=>{
+      setResult(data.map(item => item.StudentId))
+     })
+    .catch(err => console.log(err))
+     }, [])
   return (
     <Dialog open={open}>
     <DialogContent>

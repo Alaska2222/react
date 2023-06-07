@@ -8,6 +8,7 @@ import Linechart from '../components/LineChart';
 import DeleteButton from '../components/DeleteButton';
 import "../styles/profile.css"
 import { AnimatedPage } from '../components/AnimatedPage';
+import { toast, ToastContainer } from 'react-toastify';
 import Swal from "sweetalert2"
 
 export default function Profile(){
@@ -19,10 +20,10 @@ export default function Profile(){
     const [group, setGroup] = useState('')
     const [isDisabled, setIsDisabled] = useState(true)
     let [otherrecords, setOtherRecord] = useState([])
-    const username = localStorage.getItem('username');
-    const password = localStorage.getItem('password');
-
     let [records, setRecord] = useState([])
+    const token = window.localStorage.getItem('token')
+    const decodedToken = atob(token);
+    const [username] = decodedToken.split(':');
 
     
     useEffect(() => {
@@ -39,9 +40,8 @@ export default function Profile(){
       const fetchData = async () => {
         try {
           const headers = new Headers();
-          headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+          headers.set('Authorization', `Basic ${token}`)
           headers.set('content-type', 'application/json');
-          console.log(username, password, headers)
           const response = await fetch(`http://127.0.0.1:5000/student/${username}`, {
             method: "GET",
             headers,
@@ -144,10 +144,85 @@ export default function Profile(){
     });
   }, [records, sortColumn, sortDirection]);
 
+  const [invalidFields, setInvalidFields] = useState([]);
+  const validateForm = () => {
+    const invalidFields = [];
+
+    if (!name) {
+      invalidFields.push('name');
+      toast.error("Fill out name ");
+    }
+
+    if (!surname) {
+      invalidFields.push('surname');
+      toast.error("Fill out surname ");
+    }
+
+    if (!age) {
+      invalidFields.push('age');
+      toast.error("Fill out age ");
+    }
+
+    if (!email) {
+      invalidFields.push('email');
+      toast.error("Fill out email ");
+    }
+
+    if (!phone) {
+      invalidFields.push('phone');
+      toast.error("Fill out phone ");
+    }
+
+    if (age < 18) {
+      invalidFields.push('age');
+      toast.error("Age should be a under 18");
+    }
+    if (/\d/.test(name) || /[^a-zA-Z]/.test(name)) {
+      invalidFields.push('name');
+      toast.error("Name should not contain numbers or special characters");
+    }
+
+    if (/\d/.test(surname) || /[^a-zA-Z]/.test(surname)) {
+      invalidFields.push('surname');
+      toast.error("Surame should not contain numbers or special characters");
+    }
+
+    if (!isValidEmail(email)) {
+      invalidFields.push('email');
+      toast.error("Invalid email input");
+    }
+
+    if (!isValidPhone(phone)) {
+      invalidFields.push('phone');
+      toast.error("Invalid phone input");
+    }
+
+    setInvalidFields(invalidFields);
+
+    return invalidFields.length === 0;
+  };
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPhone = (phone) => {
+    const phoneRegex = /^\+\d{1,3}\d{9}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const isFieldInvalid = (fieldName) => {
+    return invalidFields.includes(fieldName);
+  };
+
   const handleUpdateClick = () => {
     if (isDisabled) {
       setIsDisabled(false);
     } else {
+      if (!validateForm()) {
+        return;
+      }
       const updatedStudent = {
         Firstname: name,
         Surname: surname,
@@ -156,9 +231,8 @@ export default function Profile(){
         Phone: phone,
         GroupId: group,
       };
-      console.log(updatedStudent)
       const headers = new Headers();
-      headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+      headers.set('Authorization', `Basic ${token}`)
       headers.set('content-type', 'application/json');
       fetch(`http://127.0.0.1:5000/student/${username}`, {
         method: 'PUT',
@@ -181,8 +255,7 @@ export default function Profile(){
         .catch((error) => {
           console.error('Error:', error);
         });
-     
-     
+      
     }
   };
   
@@ -223,15 +296,16 @@ const handleInputChange = (event) => {
   ));
     return (
         <AnimatedPage>
+        <ToastContainer autoClose={1000}/>
             <h1 id="profile-title"><span className="highlight">Welcome, to the student profile!</span></h1>
                 <div className="wrapper"> 
                     <div className="bio-block">
                     <img id="user-logo"src={profile} alt="profile logo"/>
                     <h3>{username}</h3>
                     <div className="inputs-block">
-                        <BioInput Label="Name" Name={name} Type="text" Id="name" Disabled={isDisabled}
+                        <BioInput invalid={isFieldInvalid('name')} Label="Name" Name={name} Type="text" Id="name" Disabled={isDisabled}
                   onClick={handleInputChange} />
-                        <BioInput Label="Surname" Name={surname} Type="text" Id="surname" Disabled={isDisabled}
+                        <BioInput invalid={isFieldInvalid('surname')}Label="Surname" Name={surname} Type="text" Id="surname" Disabled={isDisabled}
                   onClick={handleInputChange}/>
                   {isDisabled ? (
                   <BioInput
@@ -252,11 +326,11 @@ const handleInputChange = (event) => {
                     {options}
                   </select>
                 )}
-                        <BioInput Label="Age" Name={age} Type="number" Id="age" Disabled={isDisabled}
+                        <BioInput invalid={isFieldInvalid('age')} Label="Age" Name={age} Type="number" Id="age" Disabled={isDisabled}
                   onClick={handleInputChange}/>
-                        <BioInput Label="Phone" Name={phone} Type="tel" Id="phone" Disabled={isDisabled}
+                        <BioInput invalid={isFieldInvalid('phone')} Label="Phone" Name={phone} Type="tel" Id="phone" Disabled={isDisabled}
                   onClick={handleInputChange}/>
-                        <BioInput Label="Email" Name={email} Type="email" Id="email" Disabled={isDisabled}
+                        <BioInput invalid={isFieldInvalid('email')} Label="Email" Name={email} Type="email" Id="email" Disabled={isDisabled}
                   onClick={handleInputChange}/>
                     </div>
                     <div className ="button-group">

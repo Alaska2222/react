@@ -7,32 +7,30 @@ import Staff from "./pages/Staff"
 import Register from "./pages/Register"
 import Admin from "./pages/Admin"
 import ErrorPage from "./pages/ErrorPage"
-import {useState} from "react"
 import {Route, Routes, Navigate, useLocation, useNavigate} from "react-router-dom"
 import "./styles/main.css"
 
 function App() {
   const ProtectedRoute = ({ allowedRoles, children }) => {
-    const userRole = localStorage.getItem('role');
+    const userRole = localStorage.getItem('role')
     if (!allowedRoles.includes(userRole)) {
-      return <Navigate to="/login" replace />;
+      return <Navigate to="/login" replace />
     }
     return children;
   };
 
   const location = useLocation()
-  const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const navigate = useNavigate()
   const checkLogin = () => {
-    return localStorage.getItem("username") !== null;
+    return localStorage.getItem("token") !== null
   };
 
   const handleLogout = () => {  
-    localStorage.clear();
+    localStorage.clear()
     navigate('/')
   }
-  
+
+
   return (
   <>
       <Navbar isLoggedIn= {checkLogin()}  handleLogout= {handleLogout}/>

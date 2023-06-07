@@ -26,6 +26,7 @@ export default function Login() {
     setConsecutiveSuccess(0)
   };
   const headers = new Headers();
+  
   headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
   headers.set('content-type', 'application/json');
   const handleSubmit = async (event) => {
@@ -37,10 +38,9 @@ export default function Login() {
     
     if (response.ok) {
       const data = await response.json();
-      console.log(data.Username, data.Status);
-      localStorage.setItem("username", username);
-      localStorage.setItem("password", password);
-      localStorage.setItem("role", data.Status);
+      const token = btoa(`${username}:${password}`)
+      localStorage.setItem("role", data.Status)
+      localStorage.setItem('token', token)
       if (consecutiveSuccess === 0) { 
       toast.success("Login successful", {
         onClose: handleLoginSuccess

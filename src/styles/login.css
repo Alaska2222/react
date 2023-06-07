@@ -279,4 +279,7 @@ label {
     transition: box-shadow .2s;
   }
 
-  
+  #invalid {
+    box-shadow: 4px 2px 6px rgb(192, 8, 8)
+  }
+

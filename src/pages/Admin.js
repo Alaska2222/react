@@ -6,10 +6,10 @@ import DeleteButton from '../components/DeleteButton';
 import { AnimatedPage } from '../components/AnimatedPage';
 import Swal from "sweetalert2"
 import TableMui from '../components/TableMui';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function Admin(){
 
-    const [results, setResults] = useState([])
     const [name, setName] = useState('')
     const [surname, setSurname] = useState('')
     const [age, setAge] = useState('')
@@ -17,11 +17,8 @@ export default function Admin(){
     const [phone, setPhone] = useState('')
     const [subject, setSubject] = useState('')
     const [isDisabled, setIsDisabled] = useState(true)
-
-    const username = localStorage.getItem('username');
-    const password = localStorage.getItem('password');
+    const [records, setRecord] = useState([])
     const [otherrecords, setOtherRecord] = useState([])
-    let [records, setRecord] = useState([])
 
     useEffect(() => {
       const fetchData = async () => {
@@ -33,11 +30,13 @@ export default function Admin(){
               'Content-Type': 'application/json',
             }
           });
-          const subjectsData = await subjectsResponse.json();
+          const subjectsData = await subjectsResponse.json()
           setOtherRecord(subjectsData);
-    
+          const token = window.localStorage.getItem('token')
+          const decodedToken = atob(token);
+          const [username] = decodedToken.split(':');
           const headers = new Headers();
-          headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+          headers.set('Authorization', `Basic ${token}`)
           headers.set('content-type', 'application/json');
           const teacherResponse = await fetch(`http://127.0.0.1:5000/teachers/${username}`, {
             method: 'GET',
@@ -73,6 +72,9 @@ export default function Admin(){
         if (isDisabled) {
           setIsDisabled(false);
         } else {
+          if (!validateForm()) {
+            return;
+          }
           const updatedTeacher = {
             Firstname: name,
             Surname: surname,
@@ -81,8 +83,11 @@ export default function Admin(){
             Phone: phone,
             SubjectId: subject,
           };
+          const token = window.localStorage.getItem('token')
+          const decodedToken = atob(token);
+          const [username] = decodedToken.split(':');
           const headers = new Headers();
-          headers.set('Authorization', `Basic ${btoa(`${username}:${password}`)}`);
+          headers.set('Authorization', `Basic ${token}`)
           headers.set('content-type', 'application/json');
           fetch(`http://127.0.0.1:5000/teachers/${username}`, {
             method: 'PUT',
@@ -110,13 +115,83 @@ export default function Admin(){
         }
       };
       
+      const [invalidFields, setInvalidFields] = useState([]);
+      const validateForm = () => {
+        const invalidFields = [];
+    
+        if (!name) {
+          invalidFields.push('name');
+          toast.error("Fill out name ");
+        }
+    
+        if (!surname) {
+          invalidFields.push('surname');
+          toast.error("Fill out surname ");
+        }
+    
+        if (!age) {
+          invalidFields.push('age');
+          toast.error("Fill out age ");
+        }
+    
+        if (!email) {
+          invalidFields.push('email');
+          toast.error("Fill out email ");
+        }
+    
+        if (!phone) {
+          invalidFields.push('phone');
+          toast.error("Fill out phone ");
+        }
+    
+        if (age < 18) {
+          invalidFields.push('age');
+          toast.error("Age should be a under 18");
+        }
+        if (/\d/.test(name) || /[^a-zA-Z]/.test(name)) {
+          invalidFields.push('name');
+          toast.error("Name should not contain numbers or special characters");
+        }
+    
+        if (/\d/.test(surname) || /[^a-zA-Z]/.test(surname)) {
+          invalidFields.push('surname');
+          toast.error("Surame should not contain numbers or special characters");
+        }
+    
+        if (!isValidEmail(email)) {
+          invalidFields.push('email');
+          toast.error("Invalid email input");
+        }
+    
+        if (!isValidPhone(phone)) {
+          invalidFields.push('phone');
+          toast.error("Invalid phone input");
+        }
+    
+        setInvalidFields(invalidFields);
+        return invalidFields.length === 0;
+      };
 
+      const isValidEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      };
+    
+      const isValidPhone = (phone) => {
+        const phoneRegex = /^\+\d{1,3}\d{9}$/;
+        return phoneRegex.test(phone);
+      };
+    
+      const isFieldInvalid = (fieldName) => {
+        return invalidFields.includes(fieldName);
+      };
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         if (!isDisabled) {
           if (name === 'subject') {
             setSubject(value);
           } else {
+
             switch (name) {
               case 'name':
                 setName(value);
@@ -145,9 +220,12 @@ export default function Admin(){
           {record.SubjectId}
         </option>
       ));
-      
+      const token = window.localStorage.getItem('token')
+      const decodedToken = atob(token);
+      const [username] = decodedToken.split(':');
       return (
         <AnimatedPage>
+         <ToastContainer autoClose={1000}/>
           <h1 id="profile-title">
             <span className="highlight">Welcome to the, admin profile!</span>
           </h1>
@@ -163,6 +241,7 @@ export default function Admin(){
                   Id="name"
                   Disabled={isDisabled}
                   onClick={handleInputChange}
+                  invalid={isFieldInvalid('name')}
                 />
                 <BioInput
                   Label="Surname"
@@ -171,6 +250,7 @@ export default function Admin(){
                   Id="surname"
                   Disabled={isDisabled}
                   onClick={handleInputChange}
+                  invalid={isFieldInvalid('surname')}
                 />
             
                 <BioInput
@@ -180,6 +260,7 @@ export default function Admin(){
                   Id="age"
                   Disabled={isDisabled}
                   onClick={handleInputChange}
+                  invalid={isFieldInvalid('age')}
                 />
                 <BioInput
                   Label="Phone"
@@ -188,6 +269,7 @@ export default function Admin(){
                   Id="phone"
                   Disabled={isDisabled}
                   onClick={handleInputChange}
+                  invalid={isFieldInvalid('phone')}
                 />
                 <BioInput
                   Label="Email"
@@ -196,6 +278,7 @@ export default function Admin(){
                   Id="email"
                   Disabled={isDisabled}
                   onClick={handleInputChange}
+                  invalid={isFieldInvalid('email')}
                 />
                 {isDisabled ? (
                   <BioInput
