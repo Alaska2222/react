@@ -3,51 +3,54 @@ import { FaTimes, FaBars } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 
 
-function Navbar() {
+function Navbar(props) {
+  const isLoggedIn = props.isLoggedIn;
+  const handleLogout = props.handleLogout;
   const navRef = useRef();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const showNavbar = () => {
-    navRef.current.classList.toggle("responsive_nav");
+  navRef.current.classList.toggle("responsive_nav");
   };
-
-  useEffect(() => {
-    const user = localStorage.getItem("username");
-    if (user) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.clear();
-    setIsLoggedIn(false);
-    window.location.reload();
-    navigate('/')
-  };
+  
 
   return (
     <header>
       <nav ref={navRef}>
-        <Link to="/" target="_self">
-          Home
-        </Link>
         {isLoggedIn ? (
           <>
-            <Link onClick={handleLogout}>Logout</Link>
+          <Link to="/" target="_self">
+             Home       
+          </Link>       
+          <Link onClick={handleLogout}>
+             Logout
+          </Link>
+          {localStorage.getItem('role') === 'admin' ? (
+            <Link to="/admin" target="_self">
+              Admin Profile
+            </Link>
+          ) : (
             <Link to="/profile" target="_self">
               User Profile
             </Link>
-          </>
+          )}
+          <Link to="/staff" target="_self">
+            Our Staff
+          </Link>
+    </>
         ) : (
+          <>
+          <Link to="/" target="_self">
+             Home       
+          </Link> 
+          
           <Link to="/login" target="_self" >
             Login
           </Link>
+          <Link to="/staff" target="_self">
+            Our Staff
+          </Link>
+          </>
         )}
-        <Link to="/staff" target="_self">
-          Our Staff
-        </Link>
         <button className="nav-btn nav-close-btn" onClick={showNavbar}>
           <FaTimes />
         </button>

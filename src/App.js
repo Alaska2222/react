@@ -7,12 +7,11 @@ import Staff from "./pages/Staff"
 import Register from "./pages/Register"
 import Admin from "./pages/Admin"
 import ErrorPage from "./pages/ErrorPage"
-import {Route, Routes, Navigate, useLocation} from "react-router-dom"
-
-import { AnimatePresence } from "framer-motion"
+import {useState} from "react"
+import {Route, Routes, Navigate, useLocation, useNavigate} from "react-router-dom"
 import "./styles/main.css"
-function App() {
 
+function App() {
   const ProtectedRoute = ({ allowedRoles, children }) => {
     const userRole = localStorage.getItem('role');
     if (!allowedRoles.includes(userRole)) {
@@ -22,10 +21,21 @@ function App() {
   };
 
   const location = useLocation()
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const checkLogin = () => {
+    return localStorage.getItem("username") !== null;
+  };
+
+  const handleLogout = () => {  
+    localStorage.clear();
+    navigate('/')
+  }
+  
   return (
   <>
-      <Navbar />
-    
+      <Navbar isLoggedIn= {checkLogin()}  handleLogout= {handleLogout}/>
       <Routes key={location.pathname} location={location}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
