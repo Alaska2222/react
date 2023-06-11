@@ -10,6 +10,8 @@ import "../styles/profile.css"
 import { AnimatedPage } from '../components/AnimatedPage';
 import { toast, ToastContainer } from 'react-toastify';
 import Swal from "sweetalert2"
+import { Footer } from '../components/chatbot/Footer';
+
 
 export default function Profile(){
     const [name, setName] = useState('')
@@ -24,7 +26,7 @@ export default function Profile(){
     const token = window.localStorage.getItem('token')
     const decodedToken = atob(token);
     const [username] = decodedToken.split(':');
-
+    
     
     useEffect(() => {
       const fetchGroups = async () => {
@@ -259,7 +261,6 @@ export default function Profile(){
     }
   };
   
-
 const handleInputChange = (event) => {
     const { name, value } = event.target;
     if (!isDisabled) {
@@ -414,6 +415,7 @@ const handleInputChange = (event) => {
                         </div>  
                 </div>
             </div>
+            <Footer/>
         </AnimatedPage>
     )
 }

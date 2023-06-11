@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import Navbar from "./components/Navbar"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
@@ -7,10 +7,11 @@ import Staff from "./pages/Staff"
 import Register from "./pages/Register"
 import Admin from "./pages/Admin"
 import ErrorPage from "./pages/ErrorPage"
+import ChatBot  from "./pages/ChatBot"
 import {Route, Routes, Navigate, useLocation, useNavigate} from "react-router-dom"
 import "./styles/main.css"
-
 function App() {
+
   const ProtectedRoute = ({ allowedRoles, children }) => {
     const userRole = localStorage.getItem('role')
     if (!allowedRoles.includes(userRole)) {
@@ -18,7 +19,7 @@ function App() {
     }
     return children;
   };
-
+ 
   const location = useLocation()
   const navigate = useNavigate()
   const checkLogin = () => {
@@ -29,7 +30,6 @@ function App() {
     localStorage.clear()
     navigate('/')
   }
-
 
   return (
   <>
@@ -56,6 +56,14 @@ function App() {
         />
         <Route path="/staff" element={<Staff />} />
         <Route path="*" element={<ErrorPage />} />
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "user"]}>
+              <ChatBot />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
    </>
   );

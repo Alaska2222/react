@@ -78,6 +78,11 @@ const TableMui = () => {
         throw new Error('Network response was not ok');
       }
 
+      Swal.fire(
+        'Success!',
+        'Mark was updated!',
+        'success'
+      )
       const updatedMarks = [...marks];
       updatedMarks[row.index] = values;
       setMarks(updatedMarks);
@@ -257,9 +262,9 @@ const TableMui = () => {
             </Tooltip>
             <Tooltip arrow placement="right" title="Delete">
               <span>
-                <RiDeleteBin4Fill color="rgba(239, 64, 64, 0.875)" size={22} 
-                onMouseOver={({target})=>target.style.color="rgba(124, 3, 3, 0.875)"}
-                onMouseOut={({target})=>target.style.color="rgba(239, 64, 64, 0.875)"}
+                <RiDeleteBin4Fill color="red" size={22} 
+                onMouseOver={({target})=>target.style.color="grey"}
+                onMouseOut={({target})=>target.style.color="red"}
                 onClick={() => handleDeleteRow(row)}>
                   <Delete />
                 </RiDeleteBin4Fill>

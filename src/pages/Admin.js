@@ -7,6 +7,7 @@ import { AnimatedPage } from '../components/AnimatedPage';
 import Swal from "sweetalert2"
 import TableMui from '../components/TableMui';
 import { toast, ToastContainer } from 'react-toastify';
+import { Footer } from '../components/chatbot/Footer';
 
 export default function Admin(){
 
@@ -312,6 +313,7 @@ export default function Admin(){
               </div>
             </div>
           </div>
+          <Footer/>
         </AnimatedPage>
       );
 }

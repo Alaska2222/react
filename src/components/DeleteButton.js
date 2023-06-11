@@ -27,12 +27,13 @@ function DeleteButton({ username }) {
             } else{
               url = `http://127.0.0.1:5000/teachers/${username}`
             }
+            const token = window.localStorage.getItem('token')
+            const headers = new Headers();
+            headers.set('Authorization', `Basic ${token}`)
+            headers.set('content-type', 'application/json');
             const options = {
               method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + btoa(localStorage.getItem('username') + ':' + localStorage.getItem('password'))
-              }
+              headers,
             };
 
             fetch(url, options)
@@ -42,6 +43,7 @@ function DeleteButton({ username }) {
                 }
                 localStorage.clear();
                 window.location.reload()
+                navigate('/login')
               })
           });
         }

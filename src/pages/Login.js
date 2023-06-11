@@ -22,6 +22,7 @@ export default function Login() {
     } else {
       navigate("/admin");
     }
+  
     window.location.reload()
     setConsecutiveSuccess(0)
   };
